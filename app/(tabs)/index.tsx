@@ -11,8 +11,23 @@ import {
   ButtonText,
 } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
+import { useEffect, useState } from "react";
+import { Alert } from "react-native";
+import axios from "axios";
+
+const apiUrl = process.env.EXPO_PUBLIC_API_URL as string;
 
 export default function HomeScreen() {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    axios
+      .get(apiUrl)
+      .then(({ data }) => setData(data.values))
+      .catch((err) => {
+        console.log(err);
+        Alert.alert("Ошибка", "Нет данных");
+      });
+  }, []);
   return (
     <View>
       <GluestackUIProvider config={config}>
@@ -40,6 +55,7 @@ export default function HomeScreen() {
                 </ButtonText>
               </Button>
             </FormControl>
+            <Text>{data}</Text>
           </HStack>
         </Box>
       </GluestackUIProvider>
