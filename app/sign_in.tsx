@@ -10,10 +10,11 @@ import {
   ButtonText,
 } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert } from "react-native";
 import axios from "axios";
 import { Image } from "react-native";
+import { router } from "expo-router";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL as string;
 
@@ -26,11 +27,11 @@ type Item = {
   password: string;
 };
 
-export default function HomeScreen() {
+export default function signIn() {
   const [data, setData] = useState<Item[]>([]);
 
-  const [login, setLogin] = useState("");
-  const [password, setPassword] = useState("");
+  const [login, setLogin] = useState("admin");
+  const [password, setPassword] = useState("123");
 
   useEffect(() => {
     axios
@@ -49,6 +50,7 @@ export default function HomeScreen() {
 
             jsonData.push(temp as Item);
           }
+
           setData(jsonData);
         }
       })
@@ -62,6 +64,12 @@ export default function HomeScreen() {
     const element = data.find(
       (item) => item.password === password && item.login === login
     );
+
+    if (!element) return;
+
+    router.navigate("/home");
+
+    router.setParams({ user: element.id });
   };
 
   return (
