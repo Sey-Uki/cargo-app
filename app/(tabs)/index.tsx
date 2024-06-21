@@ -3,7 +3,6 @@ import {
   Box,
   View,
   Text,
-  HStack,
   FormControl,
   Input,
   InputField,
@@ -11,52 +10,123 @@ import {
   ButtonText,
 } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Alert } from "react-native";
 import axios from "axios";
+import { Image } from "react-native";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL as string;
 
+type Item = {
+  id: string;
+  weight: string;
+  volume: string;
+  cost: string;
+  login: string;
+  password: string;
+};
+
 export default function HomeScreen() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Item[]>([]);
+
+  const [login, setLogin] = useState("");
+  const [password, setPassword] = useState("");
+
   useEffect(() => {
     axios
       .get(apiUrl)
-      .then(({ data }) => setData(data.values))
+      .then(({ data: { values } }) => {
+        if (values.length) {
+          const headers: keyof Item = values[0];
+          const jsonData: Item[] = [];
+
+          for (let i = 1; i < values.length; i++) {
+            const temp: Record<string, string> = {};
+
+            for (let j = 0; j < headers.length; j++) {
+              temp[headers[j]] = values[i][j];
+            }
+
+            jsonData.push(temp as Item);
+          }
+          setData(jsonData);
+        }
+      })
       .catch((err) => {
         console.log(err);
         Alert.alert("Ошибка", "Нет данных");
       });
   }, []);
+
+  const auth = () => {
+    const element = data.find(
+      (item) => item.password === password && item.login === login
+    );
+  };
+
   return (
     <View>
       <GluestackUIProvider config={config}>
         <Box width="100%" justifyContent="center" alignItems="center">
-          <HStack
+          <View
             height="100%"
             justifyContent="center"
-            space="lg"
-            flexDirection="column"
             width="100%"
             padding={20}
+            alignItems="center"
+            gap={20}
           >
-            <Text size="xl" bold>
-              Введите свой номер телефона
+            <Image
+              source={require("@/assets/images/logo.png")}
+              style={{ marginBottom: 100 }}
+            />
+            <Text fontSize="$lg" bold color="$black">
+              Войти в профиль
             </Text>
-            <FormControl>
-              <Input>
-                <InputField placeholder="Телефон" />
+            <FormControl width="100%">
+              <Input borderRadius="$md">
+                <InputField
+                  fontSize="$sm"
+                  placeholder="email@domain.com"
+                  value={login}
+                  onChangeText={setLogin}
+                />
               </Input>
             </FormControl>
-            <FormControl>
-              <Button bg="$darkBlue600">
+            <FormControl width="100%">
+              <Input borderRadius="$md">
+                <InputField
+                  fontSize="$sm"
+                  type="password"
+                  placeholder="password"
+                  value={password}
+                  onChangeText={setPassword}
+                />
+              </Input>
+            </FormControl>
+            <FormControl width="100%">
+              <Button bg="$black" borderRadius="$md" onPress={() => auth()}>
                 <ButtonText fontSize="$sm" fontWeight="$medium">
-                  Отправить
+                  Войти
                 </ButtonText>
               </Button>
             </FormControl>
-            <Text>{data}</Text>
-          </HStack>
+            <Text
+              color="#828282"
+              width="100%"
+              textAlign="center"
+              fontSize="$xs"
+            >
+              By clicking continue, you agree to our{" "}
+              <Text color="$black" fontSize="$xs">
+                Terms of Service
+              </Text>{" "}
+              and{" "}
+              <Text color="$black" fontSize="$xs">
+                Privacy Policy
+              </Text>
+            </Text>
+          </View>
         </Box>
       </GluestackUIProvider>
     </View>
