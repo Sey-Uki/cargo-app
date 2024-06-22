@@ -6,7 +6,7 @@ import {
   View,
 } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
-import { useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams, Stack } from "expo-router";
 
 type Item = {
   id: string;
@@ -17,7 +17,7 @@ type Item = {
   password: string;
 };
 
-const home = () => {
+export default function index() {
   const { user } = useLocalSearchParams<{ user: string }>();
 
   return (
@@ -30,8 +30,7 @@ const home = () => {
         </Heading>
         <Text size="sm">На складе в Китае</Text>
       </Card>
+      <Link href="/sign_in">Log out</Link>
     </GluestackUIProvider>
   );
-};
-
-export default home;
+}

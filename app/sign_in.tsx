@@ -67,9 +67,10 @@ export default function signIn() {
 
     if (!element) return;
 
-    router.navigate("/home");
-
-    router.setParams({ user: element.id });
+    router.navigate({
+      pathname: "/(tabs)",
+      params: { user: element.login },
+    });
   };
 
   return (
