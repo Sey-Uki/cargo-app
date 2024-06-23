@@ -8,6 +8,7 @@ import {
   InputField,
   Button,
   ButtonText,
+  ButtonSpinner,
 } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
 import { useState } from "react";
@@ -28,7 +29,11 @@ export default function signIn() {
   const [email, setemail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const onAuth = () => {
+    setIsLoading(true);
+
     axios
       .get(apiUrl)
       .then(({ data: { values } }) => {
@@ -51,20 +56,25 @@ export default function signIn() {
           );
 
           if (!user) {
-            throw Error('Пользователь не найден');
+            throw Error("Пользователь не найден");
           }
 
           dispatch(setUserData(user));
-          dispatch(setOrders(jsonData.filter((item) => user.email === item.email)));
+          dispatch(
+            setOrders(jsonData.filter((item) => user.email === item.email))
+          );
 
           dispatch(logIn());
-      
-          router.replace('/');
+
+          router.replace("/");
         }
       })
       .catch((err) => {
         console.error(err);
         Alert.alert("Ошибка", err.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -109,11 +119,22 @@ export default function signIn() {
               </Input>
             </FormControl>
             <FormControl width="100%">
-              <Button bg="$black" borderRadius="$md" onPress={onAuth}>
-                <ButtonText fontSize="$sm" fontWeight="$medium">
-                  Войти
-                </ButtonText>
-              </Button>
+              {isLoading && (
+                <Button isDisabled bg="$black" borderRadius="$md">
+                  <ButtonSpinner mr="$1" />
+                  <ButtonText fontWeight="$medium" fontSize="$sm">
+                    Загрузка...
+                  </ButtonText>
+                </Button>
+              )}
+
+              {!isLoading && (
+                <Button bg="$black" borderRadius="$md" onPress={onAuth}>
+                  <ButtonText fontSize="$sm" fontWeight="$medium">
+                    Войти
+                  </ButtonText>
+                </Button>
+              )}
             </FormControl>
             <Text
               color="#828282"
