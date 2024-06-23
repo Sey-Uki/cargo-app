@@ -1,8 +1,13 @@
 import { ArrowRight } from "@/components/ArrowRight";
 import { TopBar } from "@/components/TopBar";
+import { useAppDispatch } from "@/store";
+import { logOut } from "@/store/slices/auth";
 import { Button, ButtonText, Text, View } from "@gluestack-ui/themed";
+import { router } from "expo-router";
 
 export default function profile() {
+  const dispatch = useAppDispatch();
+
   return (
     <View flex={1} justifyContent="space-between">
       <View>
@@ -47,6 +52,12 @@ export default function profile() {
         size="lg"
         borderRadius={8}
         bgColor="#CE1D1D"
+        onPress={() => {
+          dispatch(logOut());
+          router.navigate({
+            pathname: "/sign_in",
+          });
+        }}
       >
         <ButtonText>Выйти</ButtonText>
       </Button>
