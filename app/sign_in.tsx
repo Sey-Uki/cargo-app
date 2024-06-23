@@ -10,7 +10,7 @@ import {
   ButtonText,
 } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Alert } from "react-native";
 import axios from "axios";
 import { Image } from "react-native";
@@ -18,18 +18,17 @@ import { router } from "expo-router";
 import { useAppDispatch } from "@/store";
 import { logIn } from "@/store/slices/auth";
 import { UserData, setUserData } from "@/store/slices/user";
+import { setOrders } from "@/store/slices/orders";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL as string;
 
 export default function signIn() {
   const dispatch = useAppDispatch();
 
-  const [data, setData] = useState<UserData[]>([]);
+  const [email, setemail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [email, setemail] = useState("test@mail.ru");
-  const [password, setPassword] = useState("123");
-
-  useEffect(() => {
+  const onAuth = () => {
     axios
       .get(apiUrl)
       .then(({ data: { values } }) => {
@@ -47,29 +46,28 @@ export default function signIn() {
             jsonData.push(temp as UserData);
           }
 
-          setData(jsonData);
+          const user = jsonData.find(
+            (item) => item.password === password && item.email === email
+          );
+
+          if (!user) {
+            throw Error('Пользователь не найден');
+          }
+
+          dispatch(setUserData(user));
+          dispatch(setOrders(jsonData.filter((item) => user.email === item.email)));
+
+          dispatch(logIn());
+      
+          router.navigate({
+            pathname: "/(tabs)",
+          });
         }
       })
       .catch((err) => {
         console.log(err);
-        Alert.alert("Ошибка", "Нет данных");
+        Alert.alert("Ошибка", err.message);
       });
-  }, []);
-
-  const auth = () => {
-    const element = data.find(
-      (item) => item.password === password && item.email === email
-    );
-
-    if (!element) return;
-
-    dispatch(logIn());
-    dispatch(setUserData(element));
-
-    router.navigate({
-      pathname: "/(tabs)",
-      params: { user: element.email },
-    });
   };
 
   return (
@@ -113,7 +111,7 @@ export default function signIn() {
               </Input>
             </FormControl>
             <FormControl width="100%">
-              <Button bg="$black" borderRadius="$md" onPress={() => auth()}>
+              <Button bg="$black" borderRadius="$md" onPress={onAuth}>
                 <ButtonText fontSize="$sm" fontWeight="$medium">
                   Войти
                 </ButtonText>

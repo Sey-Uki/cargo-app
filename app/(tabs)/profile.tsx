@@ -56,6 +56,7 @@ export default function profile() {
         bgColor="#CE1D1D"
         onPress={() => {
           dispatch(logOut());
+          
           router.navigate({
             pathname: "/sign_in",
           });
