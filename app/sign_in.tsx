@@ -21,13 +21,12 @@ import { UserData, setUserData } from "@/store/slices/user";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL as string;
 
-
 export default function signIn() {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   const [data, setData] = useState<UserData[]>([]);
 
-  const [login, setLogin] = useState("admin");
+  const [email, setemail] = useState("test@mail.ru");
   const [password, setPassword] = useState("123");
 
   useEffect(() => {
@@ -59,17 +58,17 @@ export default function signIn() {
 
   const auth = () => {
     const element = data.find(
-      (item) => item.password === password && item.login === login
+      (item) => item.password === password && item.email === email
     );
 
     if (!element) return;
 
-   dispatch(logIn())
-   dispatch(setUserData(element))
+    dispatch(logIn());
+    dispatch(setUserData(element));
 
     router.navigate({
       pathname: "/(tabs)",
-      params: { user: element.login },
+      params: { user: element.email },
     });
   };
 
@@ -97,8 +96,8 @@ export default function signIn() {
                 <InputField
                   fontSize="$sm"
                   placeholder="email@domain.com"
-                  value={login}
-                  onChangeText={setLogin}
+                  value={email}
+                  onChangeText={setemail}
                 />
               </Input>
             </FormControl>

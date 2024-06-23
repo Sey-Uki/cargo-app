@@ -1,14 +1,16 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '..';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "..";
 
 export type UserData = {
-    id: string;
-    weight: string;
-    volume: string;
-    cost: string;
-    login: string;
-    password: string;
-  };
+  id: string;
+  weight: string;
+  volume: string;
+  cost: string;
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+};
 
 export type UserDataState = {
   data: UserData | null;
@@ -19,7 +21,7 @@ const initialState: UserDataState = {
 };
 
 export const userSlice = createSlice({
-  name: 'userData',
+  name: "userData",
   initialState,
   reducers: {
     setUserData: (state, action: PayloadAction<UserData>) => {
@@ -30,7 +32,6 @@ export const userSlice = createSlice({
 
 export const { setUserData } = userSlice.actions;
 
-export const selectUserData = (state: RootState) =>
-  state.user.data;
+export const selectUserData = (state: RootState) => state.user.data;
 
 export default userSlice.reducer;
