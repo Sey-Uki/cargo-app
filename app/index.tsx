@@ -3,9 +3,9 @@ import { selectIsLoggedIn } from "@/store/slices/auth";
 import { Redirect } from "expo-router";
 
 export default function index() {
-  const isLogIn = useAppSelector(selectIsLoggedIn);
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
-  if (!isLogIn) {
+  if (!isLoggedIn) {
     return <Redirect href="/sign_in" />;
   }
 
