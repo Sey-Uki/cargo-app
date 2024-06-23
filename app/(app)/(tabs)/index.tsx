@@ -37,7 +37,7 @@ export default function index() {
               <Heading mb="$1" size="md">
                 {order.id}
               </Heading>
-              <Text size="sm">На складе в Китае</Text>
+              <Text size="sm">{order.location}</Text>
             </View>
 
             <ArrowRight />

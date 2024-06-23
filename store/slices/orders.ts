@@ -3,6 +3,7 @@ import { RootState } from "..";
 
 export type OrderItem = {
   id: string;
+  location: string
   weight: string;
   volume: string;
   cost: string;
