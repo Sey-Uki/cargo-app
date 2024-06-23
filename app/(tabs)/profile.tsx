@@ -1,11 +1,13 @@
 import { ArrowRight } from "@/components/ArrowRight";
 import { TopBar } from "@/components/TopBar";
-import { useAppDispatch } from "@/store";
+import { useAppDispatch, useAppSelector } from "@/store";
 import { logOut } from "@/store/slices/auth";
+import { selectUserData } from "@/store/slices/user";
 import { Button, ButtonText, Text, View } from "@gluestack-ui/themed";
 import { router } from "expo-router";
 
 export default function profile() {
+  const userData = useAppSelector(selectUserData);
   const dispatch = useAppDispatch();
 
   return (
@@ -30,7 +32,7 @@ export default function profile() {
             padding={14}
           >
             <Text fontWeight={500}>Имя</Text>
-            <Text>Ахмад Ахмадов</Text>
+            <Text>{userData?.login}</Text>
             <ArrowRight />
           </View>
           <View

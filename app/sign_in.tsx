@@ -17,22 +17,15 @@ import { Image } from "react-native";
 import { router } from "expo-router";
 import { useAppDispatch } from "@/store";
 import { logIn } from "@/store/slices/auth";
+import { UserData, setUserData } from "@/store/slices/user";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL as string;
 
-type Item = {
-  id: string;
-  weight: string;
-  volume: string;
-  cost: string;
-  login: string;
-  password: string;
-};
 
 export default function signIn() {
   const dispatch = useAppDispatch()
 
-  const [data, setData] = useState<Item[]>([]);
+  const [data, setData] = useState<UserData[]>([]);
 
   const [login, setLogin] = useState("admin");
   const [password, setPassword] = useState("123");
@@ -42,8 +35,8 @@ export default function signIn() {
       .get(apiUrl)
       .then(({ data: { values } }) => {
         if (values.length) {
-          const headers: keyof Item = values[0];
-          const jsonData: Item[] = [];
+          const headers: keyof UserData = values[0];
+          const jsonData: UserData[] = [];
 
           for (let i = 1; i < values.length; i++) {
             const temp: Record<string, string> = {};
@@ -52,7 +45,7 @@ export default function signIn() {
               temp[headers[j]] = values[i][j];
             }
 
-            jsonData.push(temp as Item);
+            jsonData.push(temp as UserData);
           }
 
           setData(jsonData);
@@ -72,6 +65,7 @@ export default function signIn() {
     if (!element) return;
 
    dispatch(logIn())
+   dispatch(setUserData(element))
 
     router.navigate({
       pathname: "/(tabs)",
