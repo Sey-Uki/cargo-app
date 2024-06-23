@@ -32,7 +32,7 @@ export default function profile() {
             padding={14}
           >
             <Text fontWeight={500}>Имя</Text>
-            <Text>{userData?.login}</Text>
+            <Text>{userData?.firstName} {userData?.lastName}</Text>
             <ArrowRight />
           </View>
           <View
@@ -43,7 +43,7 @@ export default function profile() {
             padding={14}
           >
             <Text fontWeight={500}>Email</Text>
-            <Text>name@domain.com</Text>
+            <Text>{userData?.email}</Text>
             <ArrowRight />
           </View>
         </View>
