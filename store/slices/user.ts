@@ -2,10 +2,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "..";
 
 export type UserData = {
-  id: string;
-  weight: string;
-  volume: string;
-  cost: string;
   email: string;
   password: string;
   firstName: string;
