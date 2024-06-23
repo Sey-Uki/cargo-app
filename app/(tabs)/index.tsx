@@ -6,7 +6,9 @@ import {
   View,
 } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
-import { Link, useLocalSearchParams, Stack } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
+import { ArrowRight } from "@/components/ArrowRight";
+import { TopBar } from "@/components/TopBar";
 
 type Item = {
   id: string;
@@ -22,15 +24,30 @@ export default function index() {
 
   return (
     <GluestackUIProvider config={config}>
-      <View style={{ height: 100 }} />
-      <Text>Все заказы</Text>
-      <Card size="lg" variant="filled" m="$3">
-        <Heading mb="$1" size="md">
-          {user}
-        </Heading>
-        <Text size="sm">На складе в Китае</Text>
+      <View style={{ height: 70 }} />
+
+      <TopBar text="Все заказы" />
+
+      <Card
+        bgColor="#EDEDED"
+        size="lg"
+        variant="filled"
+        m="$3"
+        borderColor="#81838F"
+        borderWidth="$1"
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <View>
+          <Heading mb="$1" size="md">
+            {user}
+          </Heading>
+          <Text size="sm">На складе в Китае</Text>
+        </View>
+
+        <ArrowRight />
       </Card>
-      <Link href="/sign_in">Log out</Link>
     </GluestackUIProvider>
   );
 }
