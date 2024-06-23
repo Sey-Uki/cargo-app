@@ -15,6 +15,8 @@ import { Alert } from "react-native";
 import axios from "axios";
 import { Image } from "react-native";
 import { router } from "expo-router";
+import { useAppDispatch } from "@/store";
+import { logIn } from "@/store/slices/auth";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL as string;
 
@@ -28,6 +30,8 @@ type Item = {
 };
 
 export default function signIn() {
+  const dispatch = useAppDispatch()
+
   const [data, setData] = useState<Item[]>([]);
 
   const [login, setLogin] = useState("admin");
@@ -66,6 +70,8 @@ export default function signIn() {
     );
 
     if (!element) return;
+
+   dispatch(logIn())
 
     router.navigate({
       pathname: "/(tabs)",
