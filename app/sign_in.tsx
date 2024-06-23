@@ -15,8 +15,8 @@ import { Alert } from "react-native";
 import axios from "axios";
 import { Image } from "react-native";
 import { router } from "expo-router";
-import { useAppDispatch } from "@/store";
-import { logIn } from "@/store/slices/auth";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { logIn, selectIsLoggedIn } from "@/store/slices/auth";
 import { UserData, setUserData } from "@/store/slices/user";
 import { setOrders } from "@/store/slices/orders";
 
@@ -24,6 +24,8 @@ const apiUrl = process.env.EXPO_PUBLIC_API_URL as string;
 
 export default function signIn() {
   const dispatch = useAppDispatch();
+
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
   const [email, setemail] = useState("");
   const [password, setPassword] = useState("");
@@ -59,13 +61,11 @@ export default function signIn() {
 
           dispatch(logIn());
       
-          router.navigate({
-            pathname: "/(tabs)",
-          });
+          router.replace('/');
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         Alert.alert("Ошибка", err.message);
       });
   };
