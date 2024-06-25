@@ -19,31 +19,42 @@ export default function index() {
       <View style={{ height: 70 }} />
 
       <TopBar text="Все заказы" />
-      {ordersList.map((order) => {
-        return (
-          <Card
-            bgColor="#EDEDED"
-            size="lg"
-            variant="filled"
-            m="$1"
-            borderColor="#81838F"
-            borderWidth="$1"
-            flexDirection="row"
-            alignItems="center"
-            justifyContent="space-between"
-            key={order.id}
-          >
-            <View>
-              <Heading mb="$1" size="md">
-                {order.id}
-              </Heading>
-              <Text size="sm">{order.location}</Text>
-            </View>
+      <View marginTop={14}>
+        {ordersList.map((order) => {
+          return (
+            <Card
+              bgColor={
+                order.status === "paid" ? "rgba(21, 124, 19, 0.15)" : "#FFFFFF"
+              }
+              size="lg"
+              variant="filled"
+              m="$0.5"
+              borderColor={order.status === "paid" ? "#157C13" : "#81838F"}
+              borderWidth="$1"
+              flexDirection="row"
+              alignItems="center"
+              justifyContent="space-between"
+              key={order.id}
+              borderRadius={4}
+            >
+              <View gap={3}>
+                <Heading size="md">{order.id}</Heading>
+                <Text size="sm">{order.location}</Text>
+                {order.status !== "transit" && (
+                  <Text
+                    size="sm"
+                    color={order.status === "paid" ? "#157C13" : "#000000"}
+                  >
+                    {order.status === "paid" ? "Оплачено" : "Ждет оплаты"}
+                  </Text>
+                )}
+              </View>
 
-            <ArrowRight />
-          </Card>
-        );
-      })}
+              <ArrowRight />
+            </Card>
+          );
+        })}
+      </View>
     </GluestackUIProvider>
   );
 }

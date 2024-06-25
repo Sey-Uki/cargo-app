@@ -136,21 +136,6 @@ export default function signIn() {
                 </Button>
               )}
             </FormControl>
-            <Text
-              color="#828282"
-              width="100%"
-              textAlign="center"
-              fontSize="$xs"
-            >
-              By clicking continue, you agree to our{" "}
-              <Text color="$black" fontSize="$xs">
-                Terms of Service
-              </Text>{" "}
-              and{" "}
-              <Text color="$black" fontSize="$xs">
-                Privacy Policy
-              </Text>
-            </Text>
           </View>
         </Box>
       </GluestackUIProvider>
