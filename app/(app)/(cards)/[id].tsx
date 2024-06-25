@@ -1,3 +1,4 @@
+import { ArrowLeft } from "@/components/ArrowLeft";
 import { TopBar } from "@/components/TopBar";
 import { useAppSelector } from "@/store";
 import { selectOrders } from "@/store/slices/orders";
@@ -12,7 +13,7 @@ import {
 } from "@gluestack-ui/themed";
 import { Image } from "@gluestack-ui/themed";
 import { View } from "@gluestack-ui/themed";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 
 export default function Info() {
   const { id } = useLocalSearchParams();
@@ -22,14 +23,18 @@ export default function Info() {
     return <Text>Нет данных</Text>;
   }
 
-  console.log(order);
-
   return (
     <GluestackUIProvider config={config}>
       <View style={{ height: 70 }} />
 
-      <TopBar text="Информация" />
-      
+      <TopBar
+        button={{
+          jsx: <ArrowLeft />,
+          onPress: () => router.back(),
+        }}
+        text="Информация"
+      />
+
       <View margin={15}>
         <Heading size="xl">Заказ #{order.id}</Heading>
         <Image
