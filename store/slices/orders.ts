@@ -12,6 +12,7 @@ export type OrderItem = {
   password: string;
   firstName: string;
   lastName: string;
+  img: string;
 };
 
 export type UserDataState = {
