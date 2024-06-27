@@ -20,7 +20,7 @@ export default function Info() {
   const order = useAppSelector(selectOrders).find((item) => item.id === id);
 
   if (!order) {
-    return <Text>Нет данных</Text>;
+    return <Text color="$black">Нет данных</Text>;
   }
 
   return (
@@ -46,30 +46,32 @@ export default function Info() {
         />
         <View gap={11}>
           <View flexDirection="row" justifyContent="space-between">
-            <Text>Вес</Text>
-            <Text>{order.weight}</Text>
+            <Text color="$black">Вес</Text>
+            <Text color="$black">{order.weight}</Text>
           </View>
           <View flexDirection="row" justifyContent="space-between">
-            <Text>Объем</Text>
-            <Text>{order.volume}</Text>
+            <Text color="$black">Объем</Text>
+            <Text color="$black">{order.volume}</Text>
           </View>
           <View flexDirection="row" justifyContent="space-between">
-            <Text>Трекинг</Text>
-            <Text>{order.location}</Text>
+            <Text color="$black">Трекинг</Text>
+            <Text color="$black">{order.location}</Text>
           </View>
           <View flexDirection="row" justifyContent="space-between">
-            <Text>Статус</Text>
-            <Text>{order.status === "paid" ? "Оплачено" : "Ждет оплаты"}</Text>
+            <Text color="$black">Статус</Text>
+            <Text color="$black">
+              {order.status === "paid" ? "Оплачено" : "Ждет оплаты"}
+            </Text>
           </View>
         </View>
         <Text underline marginTop={15} color="#81838F">
           Накладная
         </Text>
         <View marginTop={36} flexDirection="row" justifyContent="space-between">
-          <Text size="xl" fontWeight="$medium">
+          <Text size="xl" fontWeight="$medium" color="$black">
             Итого
           </Text>
-          <Text size="xl" fontWeight="$medium">
+          <Text size="xl" fontWeight="$medium" color="$black">
             {order.cost}
           </Text>
         </View>
@@ -79,7 +81,17 @@ export default function Info() {
               Отслеживание
             </ButtonText>
           </Button>
-          <Button bg="#157C13" borderRadius="$md" height={52}>
+          <Button
+            bg="#157C13"
+            borderRadius="$md"
+            height={52}
+            onPress={() => {
+              router.navigate({
+                pathname: "/(payment)/[id]",
+                params: { id: order.id },
+              });
+            }}
+          >
             <ButtonText fontSize="$sm" fontWeight="$medium">
               Оплатить
             </ButtonText>
