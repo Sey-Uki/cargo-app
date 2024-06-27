@@ -7,6 +7,8 @@ import { Button, ButtonText, FormControl, Heading } from "@gluestack-ui/themed";
 import { Text } from "@gluestack-ui/themed";
 import { GluestackUIProvider, View } from "@gluestack-ui/themed";
 import { router, useLocalSearchParams } from "expo-router";
+import * as Clipboard from "expo-clipboard";
+import { useState } from "react";
 
 export default function Payment() {
   const { id } = useLocalSearchParams();
@@ -15,10 +17,20 @@ export default function Payment() {
   if (!order) {
     return <Text>Нет данных</Text>;
   }
+  const [copy, setCopy] = useState(false);
+  const copyToClipboard = async () => {
+    await Clipboard.setStringAsync("220259896658889");
+    setCopy(true);
+
+    setTimeout(() => {
+      setCopy(false);
+    }, 2000);
+  };
 
   return (
     <GluestackUIProvider config={config}>
       <View style={{ height: 70 }} />
+
       <TopBar
         button={{
           jsx: <ArrowLeft />,
@@ -26,56 +38,74 @@ export default function Payment() {
         }}
         text="Оплата груза"
       />
-      <View margin={15}>
-        <Heading size="xl">Заказ #{id}</Heading>
-        <View
-          style={{
-            backgroundColor: "#000000",
-            height: 1,
-            marginTop: 12,
-            marginBottom: 12,
-          }}
-        />
-        <Text size="xl" fontWeight="$medium" color="$black">
-          Реквизиты для оплаты:
-        </Text>
-        <Text color="$black">220259896658889</Text>
-        <Text color="$black">Получатель : Магомедов М.</Text>
-        <View
-          style={{
-            backgroundColor: "#000000",
-            height: 1,
-            marginTop: 12,
-            marginBottom: 12,
-          }}
-        />
-        <View flexDirection="row" justifyContent="space-between">
-          <Text size="xl" fontWeight="$medium" color="$black">
-            К оплате
-          </Text>
-          <Text size="xl" fontWeight="$medium" color="$black">
-            {order.cost}
-          </Text>
-        </View>
-        <View
-          style={{
-            backgroundColor: "#000000",
-            height: 1,
-            marginTop: 12,
-            marginBottom: 12,
-          }}
-        />
-        <Text size="xl" fontWeight="$medium" color="$black">
-          Чек
-        </Text>
-        <Text color="#828282">Нажмите Прикрепить чек</Text>
 
-        <FormControl gap={5} marginTop={15}>
-          <Button bg="#0070FF" borderRadius="$md" height={52}>
-            <ButtonText fontSize="$sm" fontWeight="$medium">
-              Скопировать реквизиты
-            </ButtonText>
-          </Button>
+      <View margin={15} flex={1} justifyContent="space-between">
+        <View>
+          <Heading size="xl">Заказ #{id}</Heading>
+          <View
+            style={{
+              backgroundColor: "#000000",
+              height: 1,
+              marginTop: 12,
+              marginBottom: 12,
+            }}
+          />
+          <Text size="xl" fontWeight="$medium" color="$black">
+            Реквизиты для оплаты:
+          </Text>
+          <Text color="$black">220259896658889</Text>
+          <Text color="$black">Получатель : Магомедов М.</Text>
+          <View
+            style={{
+              backgroundColor: "#000000",
+              height: 1,
+              marginTop: 12,
+              marginBottom: 12,
+            }}
+          />
+          <View flexDirection="row" justifyContent="space-between">
+            <Text size="xl" fontWeight="$medium" color="$black">
+              К оплате
+            </Text>
+            <Text size="xl" fontWeight="$medium" color="$black">
+              {order.cost}
+            </Text>
+          </View>
+          <View
+            style={{
+              backgroundColor: "#000000",
+              height: 1,
+              marginTop: 12,
+              marginBottom: 12,
+            }}
+          />
+          <Text size="xl" fontWeight="$medium" color="$black">
+            Чек
+          </Text>
+          <Text color="#828282">Нажмите Прикрепить чек</Text>
+        </View>
+        <FormControl gap={5} marginTop={15} paddingBottom={40}>
+          {copy && (
+            <Button bg="#157C13" borderRadius="$md" height={52}>
+              <ButtonText fontSize="$sm" fontWeight="$medium">
+                Скопировано!
+              </ButtonText>
+            </Button>
+          )}
+          {!copy && (
+            <Button
+              $active-opacity={0.5}
+              bg="#0070FF"
+              borderRadius="$md"
+              height={52}
+              onPress={copyToClipboard}
+            >
+              <ButtonText fontSize="$sm" fontWeight="$medium">
+                Скопировать реквизиты
+              </ButtonText>
+            </Button>
+          )}
+
           <Button bg="$black" borderRadius="$md" height={52}>
             <ButtonText fontSize="$sm" fontWeight="$medium">
               Прикрепить чек
