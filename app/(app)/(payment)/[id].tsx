@@ -9,6 +9,8 @@ import { GluestackUIProvider, View } from "@gluestack-ui/themed";
 import { router, useLocalSearchParams } from "expo-router";
 import * as Clipboard from "expo-clipboard";
 import { useState } from "react";
+import * as ImagePicker from "expo-image-picker";
+import { Image } from "@gluestack-ui/themed";
 
 export default function Payment() {
   const { id } = useLocalSearchParams();
@@ -25,6 +27,19 @@ export default function Payment() {
     setTimeout(() => {
       setCopy(false);
     }, 2000);
+  };
+
+  const [image, setImage] = useState<string | null>(null);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
   };
 
   return (
@@ -83,6 +98,11 @@ export default function Payment() {
             Чек
           </Text>
           <Text color="#828282">Нажмите Прикрепить чек</Text>
+          {image && (
+            <View marginTop={12}>
+              <Image height={198} width={123} alt="Чек" source={{ uri: image }} />
+            </View>
+          )}
         </View>
         <FormControl gap={5} marginTop={15} paddingBottom={40}>
           {copy && (
@@ -106,7 +126,12 @@ export default function Payment() {
             </Button>
           )}
 
-          <Button bg="$black" borderRadius="$md" height={52}>
+          <Button
+            bg="$black"
+            borderRadius="$md"
+            height={52}
+            onPress={pickImage}
+          >
             <ButtonText fontSize="$sm" fontWeight="$medium">
               Прикрепить чек
             </ButtonText>
