@@ -13,6 +13,7 @@ export type OrderItem = {
   firstName: string;
   lastName: string;
   img: string;
+  invoice: string;
 };
 
 export type UserDataState = {

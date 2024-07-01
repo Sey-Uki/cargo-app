@@ -9,15 +9,23 @@ import {
   FormControl,
   GluestackUIProvider,
   Heading,
+  Modal,
+  ModalBackdrop,
+  ModalContent,
   Text,
 } from "@gluestack-ui/themed";
 import { Image } from "@gluestack-ui/themed";
 import { View } from "@gluestack-ui/themed";
 import { router, useLocalSearchParams } from "expo-router";
+import { useRef, useState } from "react";
 
 export default function Info() {
   const { id } = useLocalSearchParams();
   const order = useAppSelector(selectOrders).find((item) => item.id === id);
+
+  const [showInvoice, setShowInvoice] = useState(false)
+
+  const ref = useRef(null)
 
   if (!order) {
     return <Text color="$black">Нет данных</Text>;
@@ -65,9 +73,13 @@ export default function Info() {
               </Text>
             </View>
           </View>
-          <Text underline marginTop={15} color="#81838F">
-            Накладная
-          </Text>
+
+          <Button onPress={() => setShowInvoice(true)} ref={ref}>
+            <ButtonText underline marginTop={15} color="#81838F">
+              Накладная
+            </ButtonText>
+          </Button>
+
           <View
             marginTop={36}
             flexDirection="row"
@@ -103,6 +115,26 @@ export default function Info() {
             </ButtonText>
           </Button>
         </FormControl>
+
+        <Modal
+          isOpen={showInvoice}
+          onClose={() => {
+            setShowInvoice(false)
+          }}
+          finalFocusRef={ref}
+        >
+          <ModalBackdrop onFocus={() => setShowInvoice(false)} />
+          <ModalContent style={{ flex: 0.5 }}>
+            <Image
+              source={order.invoice}
+              style={{ width: "100%", objectFit: 'cover', flex: 1 }}
+              marginBottom={17}
+              marginTop={27}
+              alt="Накладная"
+            />
+          </ModalContent>
+        </Modal>
+
       </View>
     </GluestackUIProvider>
   );
