@@ -11,7 +11,7 @@ export default function profile() {
   const dispatch = useAppDispatch();
 
   return (
-    <View flex={1} justifyContent="space-between">
+    <View flex={1} justifyContent="space-between" backgroundColor="#fff">
       <View>
         <View style={{ height: 70 }} />
         <TopBar text="Профиль" />
@@ -31,8 +31,8 @@ export default function profile() {
             alignItems="center"
             padding={14}
           >
-            <Text fontWeight={500}>Имя</Text>
-            <Text>{userData?.firstName} {userData?.lastName}</Text>
+            <Text color="$black" fontWeight={500}>Имя</Text>
+            <Text color="$black">{userData?.firstName} {userData?.lastName}</Text>
             <ArrowRight />
           </View>
           <View
@@ -42,8 +42,8 @@ export default function profile() {
             alignItems="center"
             padding={14}
           >
-            <Text fontWeight={500}>Email</Text>
-            <Text>{userData?.email}</Text>
+            <Text color="$black" fontWeight={500}>Email</Text>
+            <Text color="$black">{userData?.email}</Text>
             <ArrowRight />
           </View>
         </View>
