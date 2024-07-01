@@ -51,11 +51,12 @@ export default function index() {
               >
                 <View gap={3}>
                   <Heading size="md">{order.id}</Heading>
-                  <Text size="sm">{order.location}</Text>
+                  <Text size="sm" color="$black">{order.location}</Text>
                   {order.status !== "transit" && (
                     <Text
                       size="sm"
                       color={order.status === "paid" ? "#157C13" : "#000000"}
+                      fontWeight={500}
                     >
                       {order.status === "paid" ? "Оплачено" : "Ждет оплаты"}
                     </Text>
