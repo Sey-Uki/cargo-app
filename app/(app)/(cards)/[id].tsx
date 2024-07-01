@@ -6,15 +6,19 @@ import { config } from "@gluestack-ui/config";
 import {
   Button,
   ButtonText,
+  CloseIcon,
   FormControl,
   GluestackUIProvider,
   Heading,
+  Icon,
   Modal,
   ModalBackdrop,
   ModalContent,
+  Pressable,
   Text,
 } from "@gluestack-ui/themed";
 import { Image } from "@gluestack-ui/themed";
+import { ModalCloseButton } from "@gluestack-ui/themed";
 import { View } from "@gluestack-ui/themed";
 import { router, useLocalSearchParams } from "expo-router";
 import { useRef, useState } from "react";
@@ -23,9 +27,9 @@ export default function Info() {
   const { id } = useLocalSearchParams();
   const order = useAppSelector(selectOrders).find((item) => item.id === id);
 
-  const [showInvoice, setShowInvoice] = useState(false)
+  const [showInvoice, setShowInvoice] = useState(false);
 
-  const ref = useRef(null)
+  const ref = useRef(null);
 
   if (!order) {
     return <Text color="$black">Нет данных</Text>;
@@ -74,11 +78,11 @@ export default function Info() {
             </View>
           </View>
 
-          <Button onPress={() => setShowInvoice(true)} ref={ref}>
-            <ButtonText underline marginTop={15} color="#81838F">
+          <Pressable onPress={() => setShowInvoice(true)} ref={ref}>
+            <Text underline marginTop={15} color="#81838F">
               Накладная
-            </ButtonText>
-          </Button>
+            </Text>
+          </Pressable>
 
           <View
             marginTop={36}
@@ -93,6 +97,7 @@ export default function Info() {
             </Text>
           </View>
         </View>
+
         <FormControl gap={5} marginTop={15} paddingBottom={40}>
           <Button bg="$black" borderRadius="$md" height={52}>
             <ButtonText fontSize="$sm" fontWeight="$medium">
@@ -119,22 +124,22 @@ export default function Info() {
         <Modal
           isOpen={showInvoice}
           onClose={() => {
-            setShowInvoice(false)
+            setShowInvoice(false);
           }}
           finalFocusRef={ref}
         >
-          <ModalBackdrop onFocus={() => setShowInvoice(false)} />
+          <ModalBackdrop />
           <ModalContent style={{ flex: 0.5 }}>
+            <ModalCloseButton alignSelf="flex-end">
+              <Icon as={CloseIcon} width={30} height={30} />
+            </ModalCloseButton>
             <Image
               source={order.invoice}
-              style={{ width: "100%", objectFit: 'cover', flex: 1 }}
-              marginBottom={17}
-              marginTop={27}
+              style={{ width: "100%", objectFit: "cover", flex: 1 }}
               alt="Накладная"
             />
           </ModalContent>
         </Modal>
-
       </View>
     </GluestackUIProvider>
   );
