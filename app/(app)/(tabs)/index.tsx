@@ -1,12 +1,10 @@
 import {
   Card,
-  GluestackUIProvider,
   Heading,
   Spinner,
   Text,
   View,
 } from "@gluestack-ui/themed";
-import { config } from "@gluestack-ui/config";
 import { ArrowRight } from "@/components/ArrowRight";
 import { TopBar } from "@/components/TopBar";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -61,74 +59,72 @@ export default function index() {
   }, []);
 
   return (
-    <GluestackUIProvider config={config}>
-      <View flex={1} backgroundColor="#fff">
-        <View style={{ height: 70 }} />
+    <View flex={1} backgroundColor="#fff">
+      <View style={{ height: 70 }} />
 
-        <TopBar text="Все заказы" />
-        <View>
-          {isLoading && (
-            <Spinner color="$emerald600" paddingTop={50} size="large" />
-          )}
+      <TopBar text="Все заказы" />
+      <View>
+        {isLoading && (
+          <Spinner color="$emerald600" paddingTop={50} size="large" />
+        )}
 
-          {!isLoading && ordersList.length > 0 && (
-            <FlatList
-              style={{ height: "100%", paddingTop: 14 }}
-              data={ordersList}
-              renderItem={({ item }) => (
-                <Pressable
-                  onPress={() => {
-                    router.navigate({
-                      pathname: "/(cards)/[id]",
-                      params: { id: item.id },
-                    });
-                  }}
+        {!isLoading && ordersList.length > 0 && (
+          <FlatList
+            style={{ height: "100%", paddingTop: 14 }}
+            data={ordersList}
+            renderItem={({ item }) => (
+              <Pressable
+                onPress={() => {
+                  router.navigate({
+                    pathname: "/(cards)/[id]",
+                    params: { id: item.id },
+                  });
+                }}
+              >
+                <Card
+                  bgColor={
+                    item.status === "paid"
+                      ? "rgba(21, 124, 19, 0.15)"
+                      : "#FFFFFF"
+                  }
+                  size="lg"
+                  variant="filled"
+                  m="$0.5"
+                  borderColor={item.status === "paid" ? "#157C13" : "#81838F"}
+                  borderWidth="$1"
+                  flexDirection="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  borderRadius={4}
                 >
-                  <Card
-                    bgColor={
-                      item.status === "paid"
-                        ? "rgba(21, 124, 19, 0.15)"
-                        : "#FFFFFF"
-                    }
-                    size="lg"
-                    variant="filled"
-                    m="$0.5"
-                    borderColor={item.status === "paid" ? "#157C13" : "#81838F"}
-                    borderWidth="$1"
-                    flexDirection="row"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    borderRadius={4}
-                  >
-                    <View gap={3}>
-                      <Heading size="md">{item.id}</Heading>
-                      <Text size="sm" color="$black">
-                        {item.location}
+                  <View gap={3}>
+                    <Heading size="md">{item.id}</Heading>
+                    <Text size="sm" color="$black">
+                      {item.location}
+                    </Text>
+                    {item.status !== "transit" && (
+                      <Text
+                        size="sm"
+                        color={item.status === "paid" ? "#157C13" : "#000000"}
+                        fontWeight={500}
+                      >
+                        {item.status === "paid" ? "Оплачено" : "Ждет оплаты"}
                       </Text>
-                      {item.status !== "transit" && (
-                        <Text
-                          size="sm"
-                          color={item.status === "paid" ? "#157C13" : "#000000"}
-                          fontWeight={500}
-                        >
-                          {item.status === "paid" ? "Оплачено" : "Ждет оплаты"}
-                        </Text>
-                      )}
-                    </View>
+                    )}
+                  </View>
 
-                    <ArrowRight />
-                  </Card>
-                </Pressable>
-              )}
-              keyExtractor={(item) => item.id}
-            />
-          )}
+                  <ArrowRight />
+                </Card>
+              </Pressable>
+            )}
+            keyExtractor={(item) => item.id}
+          />
+        )}
 
-          {!isLoading && ordersList.length === 0 && (
-            <Text paddingTop={4}>Нет данных</Text>
-          )}
-        </View>
+        {!isLoading && ordersList.length === 0 && (
+          <Text paddingTop={4}>Нет данных</Text>
+        )}
       </View>
-    </GluestackUIProvider>
+    </View>
   );
 }

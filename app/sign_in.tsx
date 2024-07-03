@@ -1,5 +1,4 @@
 import {
-  GluestackUIProvider,
   Box,
   View,
   Text,
@@ -11,7 +10,6 @@ import {
   ButtonSpinner,
   KeyboardAvoidingView,
 } from "@gluestack-ui/themed";
-import { config } from "@gluestack-ui/config";
 import { useState } from "react";
 import { Alert } from "react-native";
 import axios from "axios";
@@ -75,73 +73,71 @@ export default function signIn() {
 
   return (
     <KeyboardAvoidingView behavior="padding">
-      <GluestackUIProvider config={config}>
-        <Box width="100%" justifyContent="center" alignItems="center">
-          <View
-            height="100%"
-            justifyContent="center"
-            width="100%"
-            paddingHorizontal={20}
-            gap={20}
-          >
-            <View alignItems="center" width="100%">
-              <Image
-                source={require("@/assets/images/logo.png")}
-                style={{ marginBottom: 100 }}
-              />
-              <Text fontSize="$lg" bold color="$black">
-                Войти в профиль
-              </Text>
-            </View>
-
-            <View width="100%" gap={20}>
-              <FormControl width="100%">
-                <Input borderRadius="$md">
-                  <InputField
-                    fontSize="$sm"
-                    placeholder="email@domain.com"
-                    value={email}
-                    onChangeText={setemail}
-                    inputMode="email"
-                    keyboardType="email-address"
-                  />
-                </Input>
-              </FormControl>
-
-              <FormControl width="100%">
-                <Input borderRadius="$md">
-                  <InputField
-                    fontSize="$sm"
-                    type="password"
-                    placeholder="password"
-                    value={password}
-                    onChangeText={setPassword}
-                  />
-                </Input>
-              </FormControl>
-
-              <FormControl width="100%">
-                {isLoading && (
-                  <Button isDisabled bg="$black" borderRadius="$md">
-                    <ButtonSpinner mr="$1" />
-                    <ButtonText fontWeight="$medium" fontSize="$sm">
-                      Загрузка...
-                    </ButtonText>
-                  </Button>
-                )}
-
-                {!isLoading && (
-                  <Button bg="$black" borderRadius="$md" onPress={onAuth}>
-                    <ButtonText fontSize="$sm" fontWeight="$medium">
-                      Войти
-                    </ButtonText>
-                  </Button>
-                )}
-              </FormControl>
-            </View>
+      <Box width="100%" justifyContent="center" alignItems="center">
+        <View
+          height="100%"
+          justifyContent="center"
+          width="100%"
+          paddingHorizontal={20}
+          gap={20}
+        >
+          <View alignItems="center" width="100%">
+            <Image
+              source={require("@/assets/images/logo.png")}
+              style={{ marginBottom: 100 }}
+            />
+            <Text fontSize="$lg" bold color="$black">
+              Войти в профиль
+            </Text>
           </View>
-        </Box>
-      </GluestackUIProvider>
+
+          <View width="100%" gap={20}>
+            <FormControl width="100%">
+              <Input borderRadius="$md">
+                <InputField
+                  fontSize="$sm"
+                  placeholder="email@domain.com"
+                  value={email}
+                  onChangeText={setemail}
+                  inputMode="email"
+                  keyboardType="email-address"
+                />
+              </Input>
+            </FormControl>
+
+            <FormControl width="100%">
+              <Input borderRadius="$md">
+                <InputField
+                  fontSize="$sm"
+                  type="password"
+                  placeholder="password"
+                  value={password}
+                  onChangeText={setPassword}
+                />
+              </Input>
+            </FormControl>
+
+            <FormControl width="100%">
+              {isLoading && (
+                <Button isDisabled bg="$black" borderRadius="$md">
+                  <ButtonSpinner mr="$1" />
+                  <ButtonText fontWeight="$medium" fontSize="$sm">
+                    Загрузка...
+                  </ButtonText>
+                </Button>
+              )}
+
+              {!isLoading && (
+                <Button bg="$black" borderRadius="$md" onPress={onAuth}>
+                  <ButtonText fontSize="$sm" fontWeight="$medium">
+                    Войти
+                  </ButtonText>
+                </Button>
+              )}
+            </FormControl>
+          </View>
+        </View>
+      </Box>
     </KeyboardAvoidingView>
   );
 }

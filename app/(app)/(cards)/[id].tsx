@@ -2,13 +2,11 @@ import { ArrowLeft } from "@/components/ArrowLeft";
 import { TopBar } from "@/components/TopBar";
 import { useAppSelector } from "@/store";
 import { selectOrders } from "@/store/slices/orders";
-import { config } from "@gluestack-ui/config";
 import {
   Button,
   ButtonText,
   CloseIcon,
   FormControl,
-  GluestackUIProvider,
   Heading,
   Icon,
   Modal,
@@ -16,10 +14,10 @@ import {
   ModalContent,
   Pressable,
   Text,
+  Image,
+  ModalCloseButton,
+  View,
 } from "@gluestack-ui/themed";
-import { Image } from "@gluestack-ui/themed";
-import { ModalCloseButton } from "@gluestack-ui/themed";
-import { View } from "@gluestack-ui/themed";
 import { router, useLocalSearchParams } from "expo-router";
 import { useRef, useState } from "react";
 
@@ -36,7 +34,7 @@ export default function Info() {
   }
 
   return (
-    <GluestackUIProvider config={config}>
+    <View>
       <View style={{ height: 70 }} />
 
       <TopBar
@@ -141,6 +139,6 @@ export default function Info() {
           </ModalContent>
         </Modal>
       </View>
-    </GluestackUIProvider>
+    </View>
   );
 }

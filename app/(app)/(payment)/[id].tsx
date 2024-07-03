@@ -2,15 +2,19 @@ import { ArrowLeft } from "@/components/ArrowLeft";
 import { TopBar } from "@/components/TopBar";
 import { useAppSelector } from "@/store";
 import { selectOrders } from "@/store/slices/orders";
-import { config } from "@gluestack-ui/config";
-import { Button, ButtonText, FormControl, Heading } from "@gluestack-ui/themed";
-import { Text } from "@gluestack-ui/themed";
-import { GluestackUIProvider, View } from "@gluestack-ui/themed";
+import {
+  Button,
+  ButtonText,
+  FormControl,
+  Heading,
+  Text,
+  View,
+  Image,
+} from "@gluestack-ui/themed";
 import { router, useLocalSearchParams } from "expo-router";
 import * as Clipboard from "expo-clipboard";
 import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
-import { Image } from "@gluestack-ui/themed";
 
 export default function Payment() {
   const { id } = useLocalSearchParams();
@@ -34,7 +38,7 @@ export default function Payment() {
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true
+      allowsEditing: true,
     });
 
     if (!result.canceled) {
@@ -43,7 +47,7 @@ export default function Payment() {
   };
 
   return (
-    <GluestackUIProvider config={config}>
+    <View>
       <View style={{ height: 70 }} />
 
       <TopBar
@@ -100,7 +104,12 @@ export default function Payment() {
           <Text color="#828282">Нажмите Прикрепить чек</Text>
           {image && (
             <View marginTop={12}>
-              <Image height={198} width={123} alt="Чек" source={{ uri: image }} />
+              <Image
+                height={198}
+                width={123}
+                alt="Чек"
+                source={{ uri: image }}
+              />
             </View>
           )}
         </View>
@@ -138,6 +147,6 @@ export default function Payment() {
           </Button>
         </FormControl>
       </View>
-    </GluestackUIProvider>
+    </View>
   );
 }
