@@ -9,9 +9,6 @@ export type OrderItem = {
   volume: string;
   cost: string;
   email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
   img: string;
   invoice: string;
 };

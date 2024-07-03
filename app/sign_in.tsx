@@ -20,9 +20,8 @@ import { router } from "expo-router";
 import { useAppDispatch } from "@/store";
 import { logIn } from "@/store/slices/auth";
 import { setUserData } from "@/store/slices/user";
-import { OrderItem, setOrders } from "@/store/slices/orders";
 
-const apiUrl = process.env.EXPO_PUBLIC_API_URL as string;
+const USERS_API_URL = process.env.EXPO_PUBLIC_USERS_API_URL as string;
 
 export default function signIn() {
   const dispatch = useAppDispatch();
@@ -36,39 +35,34 @@ export default function signIn() {
     setIsLoading(true);
 
     axios
-      .get(apiUrl)
+      .get<{ values: string[][] }>(USERS_API_URL)
       .then(({ data: { values } }) => {
-        if (values.length) {
-          const headers: keyof OrderItem = values[0];
-          const jsonData: OrderItem[] = [];
-
-          for (let i = 1; i < values.length; i++) {
-            const temp: Record<string, string> = {};
-
-            for (let j = 0; j < headers.length; j++) {
-              temp[headers[j]] = values[i][j];
-            }
-
-            jsonData.push(temp as OrderItem);
-          }
-
-          const user = jsonData.find(
-            (item) => item.password === password && item.email === email
-          );
-
-          if (!user) {
-            throw Error("Пользователь не найден");
-          }
-
-          dispatch(setUserData(user));
-          dispatch(
-            setOrders(jsonData.filter((item) => user.email === item.email))
-          );
-
-          dispatch(logIn());
-
-          router.replace("/");
+        if (!values.length) {
+          throw Error("Данные не найдены");
         }
+
+        const userData = values.find((array) => {
+          const [userEmail, userPassword] = array;
+
+          return email === userEmail && password === userPassword;
+        });
+
+        if (userData === undefined) {
+          throw Error("Пользователь не найден");
+        }
+
+        dispatch(
+          setUserData({
+            email: userData[0],
+            password: userData[1],
+            firstName: userData[2],
+            lastName: userData[3],
+          })
+        );
+
+        dispatch(logIn());
+
+        router.replace("/");
       })
       .catch((err) => {
         console.error(err);
@@ -125,7 +119,7 @@ export default function signIn() {
                   />
                 </Input>
               </FormControl>
-              
+
               <FormControl width="100%">
                 {isLoading && (
                   <Button isDisabled bg="$black" borderRadius="$md">
@@ -145,7 +139,6 @@ export default function signIn() {
                 )}
               </FormControl>
             </View>
-
           </View>
         </Box>
       </GluestackUIProvider>
