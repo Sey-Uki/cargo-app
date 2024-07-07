@@ -13,7 +13,7 @@ import {
 } from "@gluestack-ui/themed";
 import { router, useLocalSearchParams } from "expo-router";
 import * as Clipboard from "expo-clipboard";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { uploadImageToFirebase } from "@/firebase-config";
 import { Alert } from "react-native";
@@ -21,26 +21,26 @@ import { Alert } from "react-native";
 export default function Payment() {
   const { id } = useLocalSearchParams();
 
-  const order = useAppSelector(selectOrders).find((item) => item.id === id);
+  const orders = useAppSelector(selectOrders)
 
   const [isCopied, setIsCopied] = useState(false);
 
   const [image, setImage] = useState<string | null>(null);
 
-  if (!order) {
-    return <Text>Нет данных</Text>;
-  }
+  const order = useMemo(() => {
+    return orders.find((item) => item.id === id);
+  }, [id, orders])
 
-  const copyToClipboard = async () => {
+  const copyToClipboard = useCallback(async () => {
     await Clipboard.setStringAsync("220259896658889");
     setIsCopied(true);
 
     setTimeout(() => {
       setIsCopied(false);
     }, 2000);
-  };
+  }, [])
 
-  const pickImage = async () => {
+  const pickImage = useCallback(async () => {
     try {
       const imageResponse = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -53,7 +53,7 @@ export default function Payment() {
   
         await uploadImageToFirebase({
           uri,
-          fileName: order.id
+          fileName: order?.id
         })
   
         setImage(uri);
@@ -63,7 +63,11 @@ export default function Payment() {
         Alert.alert(`Ошибка при загрузке изображения ${error.message}`)
       }
     }
-  };
+  }, [order?.id])
+
+  if (!order) {
+    return <Text>Нет данных</Text>;
+  }
 
   return (
     <View flex={1}>
