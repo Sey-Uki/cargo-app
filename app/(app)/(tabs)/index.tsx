@@ -17,7 +17,7 @@ import { selectUserData } from "@/store/slices/user";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL as string;
 
-export default function index() {
+export default function Index() {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUserData);
   const ordersList = useAppSelector(selectOrders);
@@ -56,7 +56,7 @@ export default function index() {
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  }, [user?.email]);
 
   return (
     <View flex={1} backgroundColor="#fff">

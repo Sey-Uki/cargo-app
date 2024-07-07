@@ -6,7 +6,7 @@ import { selectUserData } from "@/store/slices/user";
 import { Button, ButtonText, Text, View } from "@gluestack-ui/themed";
 import { router } from "expo-router";
 
-export default function profile() {
+export default function Profile() {
   const userData = useAppSelector(selectUserData);
   const dispatch = useAppDispatch();
 

@@ -21,7 +21,7 @@ import { setUserData } from "@/store/slices/user";
 
 const USERS_API_URL = process.env.EXPO_PUBLIC_USERS_API_URL as string;
 
-export default function signIn() {
+export default function SignIn() {
   const dispatch = useAppDispatch();
 
   const [email, setemail] = useState("");
