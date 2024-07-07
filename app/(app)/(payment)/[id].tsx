@@ -13,9 +13,9 @@ import {
 } from "@gluestack-ui/themed";
 import { router, useLocalSearchParams } from "expo-router";
 import * as Clipboard from "expo-clipboard";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
-import { uploadImageToFirebase } from "@/firebase-config";
+import { getImage, uploadImageToFirebase } from "@/firebase-config";
 import { Alert } from "react-native";
 
 export default function Payment() {
@@ -56,13 +56,21 @@ export default function Payment() {
           fileName: order?.id
         })
   
-        setImage(uri);
+        await getImage(order?.id)
+        .then((uri) => setImage(uri))
+        .catch((err) => console.error(err))
       }
     } catch(error) {
       if (error instanceof Error) {
         Alert.alert(`Ошибка при загрузке изображения ${error.message}`)
       }
     }
+  }, [order?.id])
+
+  useEffect(() => {
+    getImage(order?.id)
+      .then((uri) => setImage(uri))
+      .catch((err) => console.error(err))
   }, [order?.id])
 
   if (!order) {

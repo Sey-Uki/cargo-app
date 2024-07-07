@@ -1,6 +1,6 @@
 import { initializeApp, getApp, getApps } from 'firebase/app';
 
-import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
+import { getBlob, getDownloadURL, getStorage, listAll, ref, uploadBytesResumable } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
@@ -51,6 +51,16 @@ export const uploadImageToFirebase = async ({
       }
     )
   })
+}
+
+export const getImage = async (fileName: string | undefined) => {
+  if (fileName === undefined) return null
+
+  const storage = getStorage();
+
+  const pathReference = ref(storage, `receipts/${fileName}`);
+
+  return await getDownloadURL(pathReference)
 }
 
 export {
