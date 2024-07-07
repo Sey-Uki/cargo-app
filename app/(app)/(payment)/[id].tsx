@@ -20,22 +20,25 @@ import { Alert } from "react-native";
 
 export default function Payment() {
   const { id } = useLocalSearchParams();
+
   const order = useAppSelector(selectOrders).find((item) => item.id === id);
+
+  const [isCopied, setIsCopied] = useState(false);
+
+  const [image, setImage] = useState<string | null>(null);
 
   if (!order) {
     return <Text>Нет данных</Text>;
   }
-  const [copy, setCopy] = useState(false);
+
   const copyToClipboard = async () => {
     await Clipboard.setStringAsync("220259896658889");
-    setCopy(true);
+    setIsCopied(true);
 
     setTimeout(() => {
-      setCopy(false);
+      setIsCopied(false);
     }, 2000);
   };
-
-  const [image, setImage] = useState<string | null>(null);
 
   const pickImage = async () => {
     try {
@@ -130,14 +133,14 @@ export default function Payment() {
           )}
         </View>
         <FormControl gap={5} marginTop={15} paddingBottom={40}>
-          {copy && (
+          {isCopied && (
             <Button bg="#157C13" borderRadius="$md" height={52}>
               <ButtonText fontSize="$sm" fontWeight="$medium">
                 Скопировано!
               </ButtonText>
             </Button>
           )}
-          {!copy && (
+          {!isCopied && (
             <Button
               $active-opacity={0.5}
               bg="#0070FF"
