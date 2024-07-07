@@ -53,7 +53,7 @@ export default function Payment() {
   
         await uploadImageToFirebase({
           uri,
-          fileName: uri.split('/').pop()
+          fileName: order.id
         })
   
         setImage(uri);
