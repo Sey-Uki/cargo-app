@@ -15,6 +15,8 @@ import { router, useLocalSearchParams } from "expo-router";
 import * as Clipboard from "expo-clipboard";
 import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
+import { uploadImageToFirebase } from "@/firebase-config";
+import { Alert } from "react-native";
 
 export default function Payment() {
   const { id } = useLocalSearchParams();
@@ -36,13 +38,27 @@ export default function Payment() {
   const [image, setImage] = useState<string | null>(null);
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-    });
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
+    try {
+      const imageResponse = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        quality: 1,
+      });
+  
+      if (!imageResponse.canceled) {
+        const { uri } = imageResponse.assets[0]
+  
+        await uploadImageToFirebase({
+          uri,
+          fileName: uri.split('/').pop()
+        })
+  
+        setImage(uri);
+      }
+    } catch(error) {
+      if (error instanceof Error) {
+        Alert.alert(`Ошибка при загрузке изображения ${error.message}`)
+      }
     }
   };
 
