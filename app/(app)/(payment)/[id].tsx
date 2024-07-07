@@ -47,7 +47,7 @@ export default function Payment() {
   };
 
   return (
-    <View>
+    <View flex={1}>
       <View style={{ height: 70 }} />
 
       <TopBar

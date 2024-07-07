@@ -34,7 +34,7 @@ export default function Info() {
   }
 
   return (
-    <View>
+    <View flex={1}>
       <View style={{ height: 70 }} />
 
       <TopBar
