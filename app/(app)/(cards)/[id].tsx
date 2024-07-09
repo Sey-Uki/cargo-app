@@ -66,7 +66,11 @@ export default function Info() {
             </View>
             <View flexDirection="row" justifyContent="space-between">
               <Text color="$black">Трекинг</Text>
-              <Text color="$black">{order.location}</Text>
+              <Text color="$black">
+                {order.location
+                  .split("-")
+                  [order.location.split("-").length - 1].trim()}
+              </Text>
             </View>
             <View flexDirection="row" justifyContent="space-between">
               <Text color="$black">Статус</Text>
@@ -97,7 +101,17 @@ export default function Info() {
         </View>
 
         <FormControl gap={5} marginTop={15} paddingBottom={40}>
-          <Button bg="$black" borderRadius="$md" height={52}>
+          <Button
+            bg="$black"
+            borderRadius="$md"
+            height={52}
+            onPress={() => {
+              router.navigate({
+                pathname: "/(traking)/[id]",
+                params: { id: order.id },
+              });
+            }}
+          >
             <ButtonText fontSize="$sm" fontWeight="$medium">
               Отслеживание
             </ButtonText>

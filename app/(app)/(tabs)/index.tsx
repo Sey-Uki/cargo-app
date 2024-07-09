@@ -1,10 +1,4 @@
-import {
-  Card,
-  Heading,
-  Spinner,
-  Text,
-  View,
-} from "@gluestack-ui/themed";
+import { Card, Heading, Spinner, Text, View } from "@gluestack-ui/themed";
 import { ArrowRight } from "@/components/ArrowRight";
 import { TopBar } from "@/components/TopBar";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -100,7 +94,9 @@ export default function Index() {
                   <View gap={3}>
                     <Heading size="md">{item.id}</Heading>
                     <Text size="sm" color="$black">
-                      {item.location}
+                      {item.location
+                        .split("-")
+                        [item.location.split("-").length - 1].trim()}
                     </Text>
                     {item.status !== "transit" && (
                       <Text
