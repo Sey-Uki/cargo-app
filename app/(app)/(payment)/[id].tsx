@@ -17,28 +17,55 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { getImage, uploadImageToFirebase } from "@/firebase-config";
 import { Alert } from "react-native";
+import axios from "axios";
+
+const requisitesUrl = process.env.EXPO_PUBLIC_REQUISITES_API_URL as string;
 
 export default function Payment() {
   const { id } = useLocalSearchParams();
 
-  const orders = useAppSelector(selectOrders)
+  const orders = useAppSelector(selectOrders);
 
   const [isCopied, setIsCopied] = useState(false);
 
   const [image, setImage] = useState<string | null>(null);
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [req, setReq] = useState<string[]>([]);
+
+  const [cardNumber, cardHolder] = req
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    axios
+      .get<{values: string[][]}>(requisitesUrl)
+      .then(({ data: { values } }) => {
+        setReq(values.flat());
+      })
+      .catch((err) => {
+        console.error(err);
+        Alert.alert("Ошибка при получении реквизитов", err.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
+
   const order = useMemo(() => {
     return orders.find((item) => item.id === id);
-  }, [id, orders])
+  }, [id, orders]);
 
   const copyToClipboard = useCallback(async () => {
-    await Clipboard.setStringAsync("220259896658889");
+    if (!cardNumber) return;
+
+    await Clipboard.setStringAsync(cardNumber);
     setIsCopied(true);
 
     setTimeout(() => {
       setIsCopied(false);
     }, 2000);
-  }, [])
+  }, [cardNumber]);
 
   const pickImage = useCallback(async () => {
     try {
@@ -47,31 +74,31 @@ export default function Payment() {
         allowsEditing: true,
         quality: 1,
       });
-  
+
       if (!imageResponse.canceled) {
-        const { uri } = imageResponse.assets[0]
-  
+        const { uri } = imageResponse.assets[0];
+
         await uploadImageToFirebase({
           uri,
-          fileName: order?.id
-        })
-  
+          fileName: order?.id,
+        });
+
         await getImage(order?.id)
-        .then((uri) => setImage(uri))
-        .catch((err) => console.error(err))
+          .then((uri) => setImage(uri))
+          .catch((err) => console.error(err));
       }
-    } catch(error) {
+    } catch (error) {
       if (error instanceof Error) {
-        Alert.alert(`Ошибка при загрузке изображения ${error.message}`)
+        Alert.alert(`Ошибка при загрузке изображения ${error.message}`);
       }
     }
-  }, [order?.id])
+  }, [order?.id]);
 
   useEffect(() => {
     getImage(order?.id)
       .then((uri) => setImage(uri))
-      .catch((err) => console.error(err))
-  }, [order?.id])
+      .catch((err) => console.error(err));
+  }, [order?.id]);
 
   if (!order) {
     return <Text>Нет данных</Text>;
@@ -103,8 +130,20 @@ export default function Payment() {
           <Text size="xl" fontWeight="$medium" color="$black">
             Реквизиты для оплаты:
           </Text>
-          <Text color="$black">220259896658889</Text>
-          <Text color="$black">Получатель : Магомедов М.</Text>
+          <Text color="$black">
+            {isLoading && "Загрузка..."}
+
+            {!isLoading && cardNumber && cardNumber}
+
+            {!isLoading && !cardNumber && "Нет данных"}
+          </Text>
+
+          <Text color="$black">
+            Получатель : {' '}
+            {isLoading && "Загрузка..."}
+            {!isLoading && cardHolder && cardHolder}
+            {!isLoading && !cardHolder && "Нет данных"}
+          </Text>
           <View
             style={{
               backgroundColor: "#000000",
