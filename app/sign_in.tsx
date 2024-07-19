@@ -10,7 +10,7 @@ import {
   ButtonSpinner,
   KeyboardAvoidingView,
 } from "@gluestack-ui/themed";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert } from "react-native";
 import axios from "axios";
 import { Image } from "react-native";
@@ -18,6 +18,7 @@ import { router } from "expo-router";
 import { useAppDispatch } from "@/store";
 import { logIn } from "@/store/slices/auth";
 import { setUserData } from "@/store/slices/user";
+import { handleEmailLinkSignIn, sendSignInLink } from "@/functions/sendSignInLinkToEmail";
 
 const USERS_API_URL = process.env.EXPO_PUBLIC_USERS_API_URL as string;
 
@@ -71,6 +72,10 @@ export default function SignIn() {
       });
   };
 
+  // useEffect(() => {
+  //   sendSignInLink('imevlud@gmail.com')
+  // }, []);
+
   return (
     <KeyboardAvoidingView behavior="padding">
       <Box width="100%" justifyContent="center" alignItems="center">
@@ -106,6 +111,18 @@ export default function SignIn() {
             </FormControl>
 
             <FormControl width="100%">
+              <Button
+                bg="$black"
+                borderRadius="$md"
+                onPress={() => sendSignInLink(email)}
+              >
+                <ButtonText fontWeight="$medium" fontSize="$sm">
+                  Отправить ссылку для входа
+                </ButtonText>
+              </Button>
+            </FormControl>
+
+            {/* <FormControl width="100%">
               <Input borderRadius="$md">
                 <InputField
                   fontSize="$sm"
@@ -115,9 +132,9 @@ export default function SignIn() {
                   onChangeText={setPassword}
                 />
               </Input>
-            </FormControl>
+            </FormControl> */}
 
-            <FormControl width="100%">
+            {/* <FormControl width="100%">
               {isLoading && (
                 <Button isDisabled bg="$black" borderRadius="$md">
                   <ButtonSpinner mr="$1" />
@@ -134,7 +151,7 @@ export default function SignIn() {
                   </ButtonText>
                 </Button>
               )}
-            </FormControl>
+            </FormControl> */}
           </View>
         </View>
       </Box>
