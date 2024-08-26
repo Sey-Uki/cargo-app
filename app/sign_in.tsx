@@ -7,7 +7,6 @@ import {
   InputField,
   Button,
   ButtonText,
-  ButtonSpinner,
   KeyboardAvoidingView,
 } from "@gluestack-ui/themed";
 import { useState } from "react";
@@ -106,6 +105,14 @@ export default function SignIn() {
             </FormControl>
 
             <FormControl width="100%">
+              <Button bg="$black" borderRadius="$md">
+                <ButtonText fontWeight="$medium" fontSize="$sm">
+                  Вход
+                </ButtonText>
+              </Button>
+            </FormControl>
+
+            {/* <FormControl width="100%">
               <Input borderRadius="$md">
                 <InputField
                   fontSize="$sm"
@@ -115,9 +122,9 @@ export default function SignIn() {
                   onChangeText={setPassword}
                 />
               </Input>
-            </FormControl>
+            </FormControl> */}
 
-            <FormControl width="100%">
+            {/* <FormControl width="100%">
               {isLoading && (
                 <Button isDisabled bg="$black" borderRadius="$md">
                   <ButtonSpinner mr="$1" />
@@ -134,7 +141,7 @@ export default function SignIn() {
                   </ButtonText>
                 </Button>
               )}
-            </FormControl>
+            </FormControl> */}
           </View>
         </View>
       </Box>
