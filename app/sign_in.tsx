@@ -72,9 +72,9 @@ export default function SignIn() {
   };
 
   return (
-    <KeyboardAvoidingView behavior="padding">
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <SafeAreaView>
+    <SafeAreaView>
+      <KeyboardAvoidingView behavior="padding">
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
           <View paddingHorizontal={20} gap={20} marginTop={20} height="100%">
             <View>
               <Image
@@ -134,8 +134,8 @@ export default function SignIn() {
               </FormControl>
             </View>
           </View>
-        </SafeAreaView>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
