@@ -1,5 +1,4 @@
 import {
-  Box,
   View,
   Text,
   FormControl,
@@ -8,15 +7,17 @@ import {
   Button,
   ButtonText,
   KeyboardAvoidingView,
+  ButtonSpinner,
 } from "@gluestack-ui/themed";
 import { useState } from "react";
-import { Alert } from "react-native";
+import { Alert, Keyboard, TouchableWithoutFeedback } from "react-native";
 import axios from "axios";
 import { Image } from "react-native";
 import { router } from "expo-router";
 import { useAppDispatch } from "@/store";
 import { logIn } from "@/store/slices/auth";
 import { setUserData } from "@/store/slices/user";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const USERS_API_URL = process.env.EXPO_PUBLIC_USERS_API_URL as string;
 
@@ -72,79 +73,69 @@ export default function SignIn() {
 
   return (
     <KeyboardAvoidingView behavior="padding">
-      <Box width="100%" justifyContent="center" alignItems="center">
-        <View
-          height="100%"
-          justifyContent="center"
-          width="100%"
-          paddingHorizontal={20}
-          gap={20}
-        >
-          <View alignItems="center" width="100%">
-            <Image
-              source={require("@/assets/images/logo.png")}
-              style={{ marginBottom: 100 }}
-            />
-            <Text fontSize="$lg" bold color="$black">
-              Войти в профиль
-            </Text>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <SafeAreaView>
+          <View paddingHorizontal={20} gap={20} marginTop={20} height="100%">
+            <View>
+              <Image
+                source={require("@/assets/images/logo.png")}
+                style={{ marginBottom: 46 }}
+              />
+              <Text fontSize={22} fontWeight={500} color="$black">
+                Войти в профиль
+              </Text>
+            </View>
+
+            <View gap={12}>
+              <FormControl gap={8}>
+                <Text fontSize="$md" color="$black">
+                  Код пользователя
+                </Text>
+                <Input borderRadius="$lg">
+                  <InputField fontSize="$sm" placeholder="code" />
+                </Input>
+              </FormControl>
+
+              <FormControl gap={8}>
+                <Text fontSize="$md" color="$black">
+                  Пароль
+                </Text>
+                <Input borderRadius="$lg">
+                  <InputField
+                    fontSize="$sm"
+                    placeholder="******"
+                    type="password"
+                  />
+                </Input>
+              </FormControl>
+
+              <FormControl>
+                {isLoading && (
+                  <Button isDisabled bg="#1A64CB" borderRadius={12} height={44}>
+                    <ButtonSpinner mr="$1" />
+                    <ButtonText fontWeight="$medium" fontSize={16}>
+                      Загрузка...
+                    </ButtonText>
+                  </Button>
+                )}
+
+                {!isLoading && (
+                  <Button
+                    bg="#1A64CB"
+                    borderRadius={12}
+                    height={44}
+                    // onPress={onAuth}
+                  >
+                    <ButtonText fontWeight="$medium" fontSize={16}>
+                      Войти
+                    </ButtonText>
+                  </Button>
+                )}
+              </FormControl>
+            </View>
           </View>
-
-          <View width="100%" gap={20}>
-            <FormControl width="100%">
-              <Input borderRadius="$md">
-                <InputField
-                  fontSize="$sm"
-                  placeholder="email@domain.com"
-                  value={email}
-                  onChangeText={setemail}
-                  inputMode="email"
-                  keyboardType="email-address"
-                />
-              </Input>
-            </FormControl>
-
-            <FormControl width="100%">
-              <Button bg="$black" borderRadius="$md">
-                <ButtonText fontWeight="$medium" fontSize="$sm">
-                  Вход
-                </ButtonText>
-              </Button>
-            </FormControl>
-
-            {/* <FormControl width="100%">
-              <Input borderRadius="$md">
-                <InputField
-                  fontSize="$sm"
-                  type="password"
-                  placeholder="password"
-                  value={password}
-                  onChangeText={setPassword}
-                />
-              </Input>
-            </FormControl> */}
-
-            {/* <FormControl width="100%">
-              {isLoading && (
-                <Button isDisabled bg="$black" borderRadius="$md">
-                  <ButtonSpinner mr="$1" />
-                  <ButtonText fontWeight="$medium" fontSize="$sm">
-                    Загрузка...
-                  </ButtonText>
-                </Button>
-              )}
-
-              {!isLoading && (
-                <Button bg="$black" borderRadius="$md" onPress={onAuth}>
-                  <ButtonText fontSize="$sm" fontWeight="$medium">
-                    Войти
-                  </ButtonText>
-                </Button>
-              )}
-            </FormControl> */}
-          </View>
-        </View>
-      </Box>
+        </SafeAreaView>
+      </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
 }
