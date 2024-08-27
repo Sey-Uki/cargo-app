@@ -10,8 +10,7 @@ import {
   ButtonSpinner,
 } from "@gluestack-ui/themed";
 import { useState } from "react";
-import { Alert, Keyboard, TouchableWithoutFeedback } from "react-native";
-import axios from "axios";
+import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import { Image } from "react-native";
 import { router } from "expo-router";
 import { useAppDispatch } from "@/store";
@@ -19,56 +18,55 @@ import { logIn } from "@/store/slices/auth";
 import { setUserData } from "@/store/slices/user";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const USERS_API_URL = process.env.EXPO_PUBLIC_USERS_API_URL as string;
+import { db } from "@/firebase-config";
+import { collection, getDocs } from "firebase/firestore";
 
 export default function SignIn() {
   const dispatch = useAppDispatch();
 
-  const [email, setemail] = useState("");
+  const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const onAuth = () => {
+  const onAuth = async () => {
     setIsLoading(true);
 
-    axios
-      .get<{ values: string[][] }>(USERS_API_URL)
-      .then(({ data: { values } }) => {
-        if (!values.length) {
-          throw Error("Данные не найдены");
-        }
+    try {
+      const usersCollection = collection(db, "users");
 
-        const userData = values.find((array) => {
-          const [userEmail, userPassword] = array;
+      const usersSnapshot = await getDocs(usersCollection);
 
-          return email === userEmail && password === userPassword;
-        });
+      const usersList = usersSnapshot.docs.map((doc: any) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
 
-        if (userData === undefined) {
-          throw Error("Пользователь не найден");
-        }
+      const userData = usersList.find((array) => {
+        const userCode = array.code;
+        const userPassword = array.password;
 
-        dispatch(
-          setUserData({
-            email: userData[0],
-            password: userData[1],
-            firstName: userData[2],
-            lastName: userData[3],
-          })
-        );
-
-        dispatch(logIn());
-
-        router.replace("/");
-      })
-      .catch((err) => {
-        console.error(err);
-        Alert.alert("Ошибка", err.message);
-      })
-      .finally(() => {
-        setIsLoading(false);
+        return code === userCode && password === userPassword;
       });
+
+      setIsLoading(false);
+
+      dispatch(
+        setUserData({
+          email: userData.email,
+          password: userData.password,
+          firstName: userData.firstname,
+          lastName: userData.lastname,
+        })
+      );
+
+      dispatch(logIn());
+
+      router.replace("/");
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Ошибка при получении данных из Firestore: ", error);
+    }
   };
 
   return (
@@ -88,16 +86,29 @@ export default function SignIn() {
 
             <View gap={12}>
               <FormControl gap={8}>
-                <Text fontFamily="SFProText-Regular" fontSize="$md" color="$black">
+                <Text
+                  fontFamily="SFProText-Regular"
+                  fontSize="$md"
+                  color="$black"
+                >
                   Код пользователя
                 </Text>
                 <Input borderRadius="$lg">
-                  <InputField fontSize="$sm" placeholder="code" />
+                  <InputField
+                    fontSize="$sm"
+                    placeholder="code"
+                    value={code}
+                    onChangeText={setCode}
+                  />
                 </Input>
               </FormControl>
 
               <FormControl gap={8}>
-                <Text fontFamily="SFProText-Regular" fontSize="$md" color="$black">
+                <Text
+                  fontFamily="SFProText-Regular"
+                  fontSize="$md"
+                  color="$black"
+                >
                   Пароль
                 </Text>
                 <Input borderRadius="$lg">
@@ -105,6 +116,8 @@ export default function SignIn() {
                     fontSize="$sm"
                     placeholder="******"
                     type="password"
+                    value={password}
+                    onChangeText={setPassword}
                   />
                 </Input>
               </FormControl>
@@ -124,9 +137,15 @@ export default function SignIn() {
                     bg="#1A64CB"
                     borderRadius={12}
                     height={44}
-                    // onPress={onAuth}
+                    onPress={() => {
+                      onAuth();
+                    }}
                   >
-                    <ButtonText fontFamily="SFProText-Medium"  fontWeight="$medium" fontSize={16}>
+                    <ButtonText
+                      fontFamily="SFProText-Medium"
+                      fontWeight="$medium"
+                      fontSize={16}
+                    >
                       Войти
                     </ButtonText>
                   </Button>
