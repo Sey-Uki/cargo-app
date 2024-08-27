@@ -20,6 +20,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { db } from "@/firebase-config";
 import { collection, getDocs } from "firebase/firestore";
+import { Alert } from "react-native";
 
 export default function SignIn() {
   const dispatch = useAppDispatch();
@@ -51,6 +52,10 @@ export default function SignIn() {
 
       setIsLoading(false);
 
+      if (userData === undefined) {
+        throw new Error("Пользователь с такими кодом и паролем не существует")
+      }
+
       dispatch(
         setUserData({
           email: userData.email,
@@ -63,9 +68,12 @@ export default function SignIn() {
       dispatch(logIn());
 
       router.replace("/");
-    } catch (error) {
+    } catch (error: any) {
       setIsLoading(false);
-      console.error("Ошибка при получении данных из Firestore: ", error);
+      
+      Alert.alert("Ошибка", error?.message || "Что-то пошло не так")
+
+      console.error("Ошибка при получении данных из о пользователе: ", error);
     }
   };
 
