@@ -1,6 +1,13 @@
-import { initializeApp, getApp, getApps } from 'firebase/app';
+import { initializeApp, getApp, getApps, type FirebaseApp } from "firebase/app";
 
-import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
+import { getFirestore } from "firebase/firestore";
+
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
@@ -11,8 +18,12 @@ const firebaseConfig = {
   appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
 };
 
+let app: FirebaseApp;
+
 if (getApps().length === 0) {
-  initializeApp(firebaseConfig)
+  app = initializeApp(firebaseConfig);
+} else {
+  app = getApp();
 }
 
 const fbapp = getApp();
@@ -21,52 +32,53 @@ const fbStorage = getStorage();
 export const uploadImageToFirebase = async ({
   uri,
   fileName,
-  onProgress
+  onProgress,
 }: {
-  uri: string
-  fileName: string | null | undefined
-  onProgress?: (value: number) => void
+  uri: string;
+  fileName: string | null | undefined;
+  onProgress?: (value: number) => void;
 }) => {
-  const fetchResponse = await fetch(uri)
-  const blob = await fetchResponse.blob()
+  const fetchResponse = await fetch(uri);
+  const blob = await fetchResponse.blob();
 
   const imageRef = ref(getStorage(), `receipts/${fileName}`);
 
   const uploadTask = uploadBytesResumable(imageRef, blob);
 
   return new Promise((resolve, reject) => {
-    uploadTask.on('state_changed',
+    uploadTask.on(
+      "state_changed",
       (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
 
-        onProgress?.(progress)
+        onProgress?.(progress);
       },
       (error) => {
-        reject(error)
+        reject(error);
       },
       async () => {
-        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref)
+        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
 
         resolve({
           downloadURL,
           metadata: uploadTask.snapshot.metadata,
-        })
+        });
       }
-    )
-  })
-}
+    );
+  });
+};
 
 export const getImage = async (fileName: string | undefined) => {
-  if (fileName === undefined) return null
+  if (fileName === undefined) return null;
 
   const storage = getStorage();
 
   const pathReference = ref(storage, `receipts/${fileName}`);
 
-  return await getDownloadURL(pathReference)
-}
+  return await getDownloadURL(pathReference);
+};
 
-export {
-  fbapp,
-  fbStorage,
-}
+const db = getFirestore(app);
+
+export { db, fbapp, fbStorage };
