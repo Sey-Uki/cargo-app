@@ -81,14 +81,14 @@ export default function SignIn() {
                 source={require("@/assets/images/logo.png")}
                 style={{ marginBottom: 46 }}
               />
-              <Text fontSize={22} fontWeight={500} color="$black">
+              <Text fontFamily="SFProText-Medium" fontSize={22} color="$black">
                 Войти в профиль
               </Text>
             </View>
 
             <View gap={12}>
               <FormControl gap={8}>
-                <Text fontSize="$md" color="$black">
+                <Text fontFamily="SFProText-Regular" fontSize="$md" color="$black">
                   Код пользователя
                 </Text>
                 <Input borderRadius="$lg">
@@ -97,7 +97,7 @@ export default function SignIn() {
               </FormControl>
 
               <FormControl gap={8}>
-                <Text fontSize="$md" color="$black">
+                <Text fontFamily="SFProText-Regular" fontSize="$md" color="$black">
                   Пароль
                 </Text>
                 <Input borderRadius="$lg">
@@ -126,7 +126,7 @@ export default function SignIn() {
                     height={44}
                     // onPress={onAuth}
                   >
-                    <ButtonText fontWeight="$medium" fontSize={16}>
+                    <ButtonText fontFamily="SFProText-Medium"  fontWeight="$medium" fontSize={16}>
                       Войти
                     </ButtonText>
                   </Button>
