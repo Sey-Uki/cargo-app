@@ -11,7 +11,7 @@ const persistConfig = {
   storage: AsyncStorage,
   whitelist: [
     'user',
-    // 'auth',
+    'auth',
   ]
 }
 
