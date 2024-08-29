@@ -62,6 +62,8 @@ export default function SignIn() {
           password: userData.password,
           firstName: userData.firstname,
           lastName: userData.lastname,
+          phone: userData.phone,
+          code: userData.code
         })
       );
 

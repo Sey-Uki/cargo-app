@@ -6,6 +6,8 @@ export type UserData = {
   password: string;
   firstName: string;
   lastName: string;
+  phone: string,
+  code: string
 };
 
 export type UserDataState = {

@@ -36,12 +36,9 @@ export default function Profile() {
             >
               E-MAIL И ТЕЛЕФОН
             </Text>
-            <EmailAndPhone
-              email={userData?.email}
-              phone={"+7 (999) 999 99-99"}
-            />
+            <EmailAndPhone email={userData?.email} phone={userData?.phone} />
           </View>
-          <ProfileText infoText={"Код"} userText={"6438819"} />
+          <ProfileText infoText={"Код"} userText={userData?.code} />
         </View>
 
         <Button
