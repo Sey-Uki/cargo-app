@@ -1,3 +1,4 @@
+import { EmailAndPhone } from "@/components/EmailAndPhone";
 import { ProfileText } from "@/components/ProfileText";
 import { TopBar } from "@/components/TopBar";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -35,9 +36,10 @@ export default function Profile() {
             >
               E-MAIL И ТЕЛЕФОН
             </Text>
-            <ProfileText infoText={"Email"} userText={userData?.email} />
-
-            <ProfileText infoText={"Телефон"} userText={"+7 (999) 999 99-99"} />
+            <EmailAndPhone
+              email={userData?.email}
+              phone={"+7 (999) 999 99-99"}
+            />
           </View>
           <ProfileText infoText={"Код"} userText={"6438819"} />
         </View>
