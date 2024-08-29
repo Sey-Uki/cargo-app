@@ -45,14 +45,20 @@ export default function Profile() {
         <Button
           marginBottom={21}
           size="lg"
-          borderRadius={8}
-          bgColor="#CE1D1D"
+          borderRadius={12}
+          bgColor="#ffffff"
           onPress={() => {
             dispatch(logOut());
             router.replace("/sign_in");
           }}
         >
-          <ButtonText>Выйти</ButtonText>
+          <ButtonText
+            color="#FF3B30"
+            fontFamily="SFProText-Medium"
+            fontSize={16}
+          >
+            Выйти
+          </ButtonText>
         </Button>
       </View>
     </View>
