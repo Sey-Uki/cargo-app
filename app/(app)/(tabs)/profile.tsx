@@ -3,7 +3,7 @@ import { TopBar } from "@/components/TopBar";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { logOut } from "@/store/slices/auth";
 import { selectUserData } from "@/store/slices/user";
-import { Button, ButtonText, View } from "@gluestack-ui/themed";
+import { Button, ButtonText, Text, View } from "@gluestack-ui/themed";
 import { router } from "expo-router";
 
 export default function Profile() {
@@ -20,16 +20,25 @@ export default function Profile() {
         flex={1}
         paddingHorizontal={16}
       >
-        <View>
+        <View gap={32} marginTop={32}>
           <ProfileText
             infoText={"Имя"}
             userText={`${userData?.firstName} ${userData?.lastName}`}
           />
+          <View>
+            <Text
+              color="#797676"
+              paddingBottom={7}
+              paddingLeft={16}
+              fontFamily="SFProText-Regular"
+              fontSize={14}
+            >
+              E-MAIL И ТЕЛЕФОН
+            </Text>
+            <ProfileText infoText={"Email"} userText={userData?.email} />
 
-          <ProfileText infoText={"Email"} userText={userData?.email} />
-
-          <ProfileText infoText={"Телефон"} userText={"+7 (999) 999 99-99"} />
-
+            <ProfileText infoText={"Телефон"} userText={"+7 (999) 999 99-99"} />
+          </View>
           <ProfileText infoText={"Код"} userText={"6438819"} />
         </View>
 
