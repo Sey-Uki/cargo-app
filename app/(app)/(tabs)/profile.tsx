@@ -58,6 +58,7 @@ export default function Profile() {
             color="#FF3B30"
             fontFamily="SFProText-Medium"
             fontSize={16}
+            softShadow="1"
           >
             Выйти
           </ButtonText>
