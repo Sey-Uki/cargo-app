@@ -1,5 +1,5 @@
 import { EmailAndPhone } from "@/components/EmailAndPhone";
-import { ProfileText } from "@/components/ProfileText";
+import { ProfileField } from "@/components/ProfileField";
 import { TopBar } from "@/components/TopBar";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { logOut } from "@/store/slices/auth";
@@ -22,9 +22,9 @@ export default function Profile() {
         paddingHorizontal={16}
       >
         <View gap={32} marginTop={32}>
-          <ProfileText
-            infoText={"Имя"}
-            userText={`${userData?.firstName} ${userData?.lastName}`}
+          <ProfileField
+            title="Имя"
+            text={`${userData?.firstName} ${userData?.lastName}`}
           />
           <View>
             <Text
@@ -38,7 +38,7 @@ export default function Profile() {
             </Text>
             <EmailAndPhone email={userData?.email} phone={userData?.phone} />
           </View>
-          <ProfileText infoText={"Код"} userText={userData?.code} />
+          <ProfileField title="Код" text={userData?.code} />
         </View>
 
         <Button
