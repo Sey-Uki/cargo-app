@@ -1,6 +1,11 @@
 import { Text, View } from "@gluestack-ui/themed";
 
-export const ProfileText = ({ infoText, userText }: any) => {
+type ProfileFieldProps = {
+  title: string | undefined;
+  text: string | undefined;
+};
+
+export const ProfileField = ({ title, text }: ProfileFieldProps) => {
   return (
     <View
       flexDirection="row"
@@ -10,10 +15,10 @@ export const ProfileText = ({ infoText, userText }: any) => {
       borderRadius={10}
     >
       <Text color="$black" fontWeight={500} width={100}>
-        {infoText}
+        {title}
       </Text>
       <Text color="#3C3C434D" fontFamily="SFProText-Regular" fontSize={17}>
-        {userText}
+        {text}
       </Text>
     </View>
   );

@@ -1,6 +1,11 @@
 import { Text, View } from "@gluestack-ui/themed";
 
-export const EmailAndPhone = ({ email, phone }: any) => {
+type EmailAndPhoneProps = {
+  email: string | undefined;
+  phone: string | undefined;
+};
+
+export const EmailAndPhone = ({ email, phone }: EmailAndPhoneProps) => {
   return (
     <View backgroundColor="#fff" borderRadius={10}>
       <View
