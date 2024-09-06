@@ -1,8 +1,8 @@
 import { Text, View } from "@gluestack-ui/themed";
 
 type ProfileFieldProps = {
-  title: string | undefined;
-  text: string | undefined;
+  title: string;
+  text: string;
 };
 
 export const ProfileField = ({ title, text }: ProfileFieldProps) => {

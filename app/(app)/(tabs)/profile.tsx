@@ -11,6 +11,11 @@ export default function Profile() {
   const userData = useAppSelector(selectUserData);
   const dispatch = useAppDispatch();
 
+  const onLogOut = () => {
+    dispatch(logOut());
+    router.replace("/sign_in");
+  };
+
   return (
     <View flex={1} backgroundColor="#fff">
       <View style={{ height: 70 }} />
@@ -24,7 +29,7 @@ export default function Profile() {
         <View gap={32} marginTop={32}>
           <ProfileField
             title="Имя"
-            text={`${userData?.firstName} ${userData?.lastName}`}
+            text={`${userData?.firstName || "Имя"} ${userData?.lastName}`}
           />
           <View>
             <Text
@@ -36,9 +41,12 @@ export default function Profile() {
             >
               E-MAIL И ТЕЛЕФОН
             </Text>
-            <EmailAndPhone email={userData?.email} phone={userData?.phone} />
+            <EmailAndPhone
+              email={userData?.email || "email"}
+              phone={userData?.phone || "Телефон"}
+            />
           </View>
-          <ProfileField title="Код" text={userData?.code} />
+          <ProfileField title="Код" text={userData?.code || "Код"} />
         </View>
 
         <Button
@@ -46,10 +54,7 @@ export default function Profile() {
           size="lg"
           borderRadius={12}
           bgColor="#ffffff"
-          onPress={() => {
-            dispatch(logOut());
-            router.replace("/sign_in");
-          }}
+          onPress={onLogOut}
         >
           <ButtonText
             color="#FF3B30"
