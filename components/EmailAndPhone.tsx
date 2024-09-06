@@ -1,8 +1,8 @@
 import { Text, View } from "@gluestack-ui/themed";
 
 type EmailAndPhoneProps = {
-  email: string | undefined;
-  phone: string | undefined;
+  email: string;
+  phone: string;
 };
 
 export const EmailAndPhone = ({ email, phone }: EmailAndPhoneProps) => {
