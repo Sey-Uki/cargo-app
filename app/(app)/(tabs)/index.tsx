@@ -54,12 +54,13 @@ export default function Index() {
   return (
     <View flex={1} backgroundColor="#fff">
       <View style={{ height: 70 }} />
-
       <TopBar text="Все заказы" />
-      <View>
-        {isLoading && (
+      {isLoading && (
+        <View height="100%" backgroundColor="#F2F2F7">
           <Spinner color="$emerald600" paddingTop={50} size="large" />
-        )}
+        </View>
+      )}
+      <View backgroundColor="#F2F2F7">
         {!isLoading && ordersDataState.length > 0 && (
           <FlatList
             style={{ height: "100%", paddingTop: 14 }}
@@ -74,11 +75,7 @@ export default function Index() {
                 }}
               >
                 <Card
-                  bgColor={
-                    item.status === "paid"
-                      ? "rgba(21, 124, 19, 0.15)"
-                      : "#FFFFFF"
-                  }
+                  bgColor="#FFFFFF"
                   size="lg"
                   variant="filled"
                   m="$0.5"
