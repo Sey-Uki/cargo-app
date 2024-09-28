@@ -1,56 +1,55 @@
 import { Card, Heading, Spinner, Text, View } from "@gluestack-ui/themed";
 import { ArrowRight } from "@/components/ArrowRight";
 import { TopBar } from "@/components/TopBar";
-import { useAppDispatch, useAppSelector } from "@/store";
-import { OrderItem, selectOrders, setOrders } from "@/store/slices/orders";
+import { useAppSelector } from "@/store";
 import { Pressable, FlatList, Alert } from "react-native";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { selectUserData } from "@/store/slices/user";
-
-const apiUrl = process.env.EXPO_PUBLIC_API_URL as string;
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/firebase-config";
 
 export default function Index() {
-  const dispatch = useAppDispatch();
   const user = useAppSelector(selectUserData);
-  const ordersList = useAppSelector(selectOrders);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [ordersDataState, setOrdersDataState] = useState<any>([]);
+
+  const getOrders = async () => {
+    try {
+      const ordersCollection = collection(db, "orders");
+
+      const ordersSnapshot = await getDocs(ordersCollection);
+
+      const ordersList = ordersSnapshot.docs.map((doc: any) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const ordersData = ordersList.filter((array) => {
+        return user?.userId === array.userId;
+      });
+
+      setIsLoading(false);
+
+      if (ordersData === undefined) {
+        throw new Error("Пользователь с такими кодом и паролем не существует");
+      }
+
+      setOrdersDataState(ordersData);
+    } catch (error: any) {
+      setIsLoading(false);
+
+      Alert.alert("Ошибка", error?.message || "Что-то пошло не так");
+
+      console.error("Ошибка при получении данных из о пользователе: ", error);
+    }
+  };
 
   useEffect(() => {
     setIsLoading(true);
-
-    axios
-      .get(apiUrl)
-      .then(({ data: { values } }) => {
-        if (values.length) {
-          const headers: keyof OrderItem = values[0];
-          const jsonData: OrderItem[] = [];
-
-          for (let i = 1; i < values.length; i++) {
-            const temp: Record<string, string> = {};
-
-            for (let j = 0; j < headers.length; j++) {
-              temp[headers[j]] = values[i][j];
-            }
-
-            jsonData.push(temp as OrderItem);
-          }
-
-          dispatch(
-            setOrders(jsonData.filter((item) => user?.email === item.email))
-          );
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        Alert.alert("Ошибка", err.message);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, [user?.email]);
+    getOrders();
+  }, []);
 
   return (
     <View flex={1} backgroundColor="#fff">
@@ -61,11 +60,10 @@ export default function Index() {
         {isLoading && (
           <Spinner color="$emerald600" paddingTop={50} size="large" />
         )}
-
-        {!isLoading && ordersList.length > 0 && (
+        {!isLoading && ordersDataState.length > 0 && (
           <FlatList
             style={{ height: "100%", paddingTop: 14 }}
-            data={ordersList}
+            data={ordersDataState}
             renderItem={({ item }) => (
               <Pressable
                 onPress={() => {
@@ -93,11 +91,7 @@ export default function Index() {
                 >
                   <View gap={3}>
                     <Heading size="md">{item.id}</Heading>
-                    <Text size="sm" color="$black">
-                      {item.location
-                        .split("-")
-                        [item.location.split("-").length - 1].trim()}
-                    </Text>
+                    <Text size="sm" color="$black"></Text>
                     {item.status !== "transit" && (
                       <Text
                         size="sm"
@@ -117,7 +111,7 @@ export default function Index() {
           />
         )}
 
-        {!isLoading && ordersList.length === 0 && (
+        {!isLoading && ordersDataState.length === 0 && (
           <Text paddingTop={4}>Нет данных</Text>
         )}
       </View>
