@@ -63,7 +63,7 @@ export default function Index() {
       <View backgroundColor="#F2F2F7">
         {!isLoading && ordersDataState.length > 0 && (
           <FlatList
-            style={{ height: "100%", paddingTop: 14 }}
+            style={{ height: "100%", paddingTop: 16 }}
             data={ordersDataState}
             renderItem={({ item }) => (
               <Pressable
@@ -78,13 +78,14 @@ export default function Index() {
                   bgColor="#FFFFFF"
                   size="lg"
                   variant="filled"
-                  m="$0.5"
-                  borderColor={item.status === "paid" ? "#157C13" : "#81838F"}
-                  borderWidth="$1"
+                  marginRight={16}
+                  marginLeft={16}
+                  borderColor="#E5E1E1"
+                  borderWidth={1}
                   flexDirection="row"
                   alignItems="center"
                   justifyContent="space-between"
-                  borderRadius={4}
+                  borderRadius={16}
                 >
                   <View gap={3}>
                     <Heading size="md">{item.id}</Heading>
