@@ -7,7 +7,6 @@ import {
   Text,
   View,
 } from "@gluestack-ui/themed";
-import { ArrowRight } from "@/components/ArrowRight";
 import { TopBar } from "@/components/TopBar";
 import { useAppSelector } from "@/store";
 import { Pressable, FlatList, Alert } from "react-native";
@@ -19,11 +18,42 @@ import { db } from "@/firebase-config";
 import { TRACKING_STATUSES } from "@/assets/data";
 import { Image } from "@gluestack-ui/themed";
 
+type OrderItem = {
+  userId: string;
+  code: string;
+  deliveryDate: Date;
+  paymentDate: Date | null;
+  tracking: {
+    status: "toMoscow" | "inMoscow" | "toRecipient";
+    date: string;
+  }[];
+  paymentStatus: "wait" | "paid";
+  orderStatus: "active" | "finished";
+  invoice: {
+    title: string;
+    weight: number;
+    volume: number;
+    price: number;
+    goods: number;
+    insurance: number;
+    package: number;
+    finalPrice: number;
+  };
+  hiddenInvoice: {
+    density: number;
+    transAmount: number;
+    elevenRate: number;
+    orderIncome: number;
+  };
+  magicTransImage?: any;
+  images?: any;
+};
+
 export default function Index() {
   const user = useAppSelector(selectUserData);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [ordersDataState, setOrdersDataState] = useState<any>([]);
+  const [ordersDataState, setOrdersDataState] = useState<OrderItem[]>([]);
 
   const getOrders = async () => {
     try {
@@ -45,7 +75,6 @@ export default function Index() {
       if (ordersData === undefined) {
         throw new Error("Пользователь с такими кодом и паролем не существует");
       }
-      console.log(ordersData[0].images);
       setOrdersDataState(ordersData);
     } catch (error: any) {
       setIsLoading(false);
@@ -129,7 +158,7 @@ export default function Index() {
                   onPress={() => {
                     router.navigate({
                       pathname: "/(cards)/[id]",
-                      params: { id: item.id },
+                      params: { id: item.code },
                     });
                   }}
                 >
@@ -218,7 +247,7 @@ export default function Index() {
                   </Card>
                 </Pressable>
               )}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item) => item.code}
             />
           </>
         )}
