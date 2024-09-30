@@ -17,6 +17,7 @@ import { selectUserData } from "@/store/slices/user";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/firebase-config";
 import { TRACKING_STATUSES } from "@/assets/data";
+import { Image } from "@gluestack-ui/themed";
 
 export default function Index() {
   const user = useAppSelector(selectUserData);
@@ -44,7 +45,7 @@ export default function Index() {
       if (ordersData === undefined) {
         throw new Error("Пользователь с такими кодом и паролем не существует");
       }
-
+      console.log(ordersData[0].images);
       setOrdersDataState(ordersData);
     } catch (error: any) {
       setIsLoading(false);
@@ -101,7 +102,12 @@ export default function Index() {
                     </Text>
                   </View>
                 ) : (
-                  <View borderRadius={8} borderColor="#79747E" borderWidth={1}  marginRight={6}>
+                  <View
+                    borderRadius={8}
+                    borderColor="#79747E"
+                    borderWidth={1}
+                    marginRight={6}
+                  >
                     <Text
                       color="#49454F"
                       paddingHorizontal={12}
@@ -195,6 +201,19 @@ export default function Index() {
                           </Button>
                         </View>
                       )}
+
+                      <View flexDirection="row" gap={6}>
+                        {item.images.map((image: any) => (
+                          <Image
+                            size="md"
+                            source={{
+                              uri: image.src,
+                            }}
+                            alt={image.title}
+                            borderRadius={8}
+                          />
+                        ))}
+                      </View>
                     </View>
                   </Card>
                 </Pressable>
