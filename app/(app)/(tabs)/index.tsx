@@ -60,7 +60,7 @@ export default function Index() {
           <Spinner color="$emerald600" paddingTop={50} size="large" />
         </View>
       )}
-      <View backgroundColor="#F2F2F7">
+      <View height="100%" backgroundColor="#F2F2F7">
         {!isLoading && ordersDataState.length > 0 && (
           <FlatList
             style={{ height: "100%", paddingTop: 16 }}
@@ -88,31 +88,29 @@ export default function Index() {
                   borderRadius={16}
                 >
                   <View gap={3}>
-                    <Heading size="md">Заказ от ТЕСТ</Heading>
-                    <Text size="sm" color="$black">
+                    <Heading size="lg">Заказ от ТЕСТ</Heading>
+                    <Text size="sm" color="#605E5E">
                       #{item.code}
                     </Text>
                     <Text></Text>
-                    <Text>Статус доставки:</Text>
-                    <Text>
+                    <Text size="md" color="$black" fontWeight={500}>
+                      Статус доставки:
+                    </Text>
+                    <Text size="sm" color="#605E5E">
                       {item.tracking[item.tracking.length - 1].status}
                     </Text>
-                    <Text>Дата доставки:</Text>
-                    <Text>ТЕСТ</Text>
-                    <Text
-                      size="sm"
-                      color={
-                        item.paymentStatus === "paid" ? "#157C13" : "#000000"
-                      }
-                      fontWeight={500}
-                    >
+                    <Text size="md" color="$black" fontWeight={500}>
+                      Дата доставки:
+                    </Text>
+                    <Text size="sm" color="#605E5E">
+                      ТЕСТ
+                    </Text>
+                    <Text size="md" color="$black" fontWeight={500}>
                       {item.paymentStatus === "paid"
-                        ? "Оплачено"
-                        : "Ждет оплаты"}
+                        ? "Оплачен"
+                        : "Заказ не оплачен"}
                     </Text>
                   </View>
-
-                  <ArrowRight />
                 </Card>
               </Pressable>
             )}
