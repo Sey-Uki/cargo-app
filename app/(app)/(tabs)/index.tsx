@@ -60,6 +60,13 @@ export default function Index() {
     getOrders();
   }, []);
 
+  const filter = [
+    { title: "Активный", status: true },
+    { title: "Ждут оплаты", status: false },
+    { title: "Оплаченый", status: false },
+    { title: "Завершенный", status: false },
+  ];
+
   return (
     <View flex={1} backgroundColor="#fff">
       <View style={{ height: 70 }} />
@@ -71,91 +78,130 @@ export default function Index() {
       )}
       <View height="100%" backgroundColor="#F2F2F7">
         {!isLoading && ordersDataState.length > 0 && (
-          <FlatList
-            style={{ height: "100%", paddingTop: 16 }}
-            data={ordersDataState}
-            renderItem={({ item }) => (
-              <Pressable
-                onPress={() => {
-                  router.navigate({
-                    pathname: "/(cards)/[id]",
-                    params: { id: item.id },
-                  });
-                }}
-              >
-                <Card
-                  bgColor="#FFFFFF"
-                  variant="filled"
-                  marginTop={12}
-                  marginRight={16}
-                  marginLeft={16}
-                  borderColor="#E5E1E1"
-                  borderWidth={1}
-                  borderRadius={16}
-                  padding={12}
-                >
-                  <View gap={12}>
-                    <View>
-                      <Heading size="lg">Заказ от ТЕСТ</Heading>
-                      <Text size="sm" color="#605E5E">
-                        #{item.code}
-                      </Text>
-                    </View>
-
-                    <View
-                      width="100%"
-                      flexDirection="row"
-                      justifyContent="space-between"
+          <>
+            <FlatList
+              style={{ flexDirection: "row", marginTop: 16, marginLeft: 16 }}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={filter}
+              renderItem={({ item }) =>
+                item.status ? (
+                  <View
+                    borderRadius={8}
+                    backgroundColor="#007AFF"
+                    marginRight={6}
+                  >
+                    <Text
+                      color={"$white"}
+                      paddingHorizontal={12}
+                      paddingVertical={6}
+                      size="sm"
                     >
-                      <View>
-                        <Text size="md" color="$black" fontWeight={500}>
-                          Статус доставки:
-                        </Text>
-                        <Text size="sm" color="#605E5E">
-                          {TRACKING_STATUSES[item.tracking[item.tracking.length - 1].status]}
-                        </Text>
-                      </View>
-                      <View marginRight={33}>
-                        <Text size="md" color="$black" fontWeight={500}>
-                          Дата доставки:
-                        </Text>
-                        <Text size="sm" color="#605E5E">
-                          ТЕСТ
-                        </Text>
-                      </View>
-                    </View>
-                    {item.paymentStatus === "paid" ? (
-                      <Text size="md" color="$black" fontWeight={500}>
-                        Оплачен
-                      </Text>
-                    ) : (
-                      <View
-                        backgroundColor="#FDE9E4"
-                        padding={10}
-                        borderRadius={12}
-                      >
-                        <Text size="sm" color="$black" fontWeight={500}>
-                          Заказ не оплачен
-                        </Text>
-                        <Text size="sm" color="$black">
-                          Оплатите в течение 14 дней (до 23 августа)
-                        </Text>
-                        <Button marginTop={12} borderRadius={100} height={35}>
-                          <ButtonText
-                            fontWeight={500}
-                            size="md"
-                          >
-                            Перейти к оплате
-                          </ButtonText>
-                        </Button>
-                      </View>
-                    )}
+                      {item.title}
+                    </Text>
                   </View>
-                </Card>
-              </Pressable>
-            )}
-            keyExtractor={(item) => item.id}
-          />
+                ) : (
+                  <View borderRadius={8} borderColor="#79747E" borderWidth={1}  marginRight={6}>
+                    <Text
+                      color="#49454F"
+                      paddingHorizontal={12}
+                      paddingVertical={6}
+                      size="sm"
+                    >
+                      {item.title}
+                    </Text>
+                  </View>
+                )
+              }
+              keyExtractor={(item) => item.title}
+            />
+            <FlatList
+              style={{ height: "100%" }}
+              data={ordersDataState}
+              renderItem={({ item }) => (
+                <Pressable
+                  onPress={() => {
+                    router.navigate({
+                      pathname: "/(cards)/[id]",
+                      params: { id: item.id },
+                    });
+                  }}
+                >
+                  <Card
+                    bgColor="#FFFFFF"
+                    variant="filled"
+                    marginTop={12}
+                    marginRight={16}
+                    marginLeft={16}
+                    borderColor="#E5E1E1"
+                    borderWidth={1}
+                    borderRadius={16}
+                    padding={12}
+                  >
+                    <View gap={12}>
+                      <View>
+                        <Heading size="lg">Заказ от ТЕСТ</Heading>
+                        <Text size="sm" color="#605E5E">
+                          #{item.code}
+                        </Text>
+                      </View>
+
+                      <View
+                        width="100%"
+                        flexDirection="row"
+                        justifyContent="space-between"
+                      >
+                        <View>
+                          <Text size="md" color="$black" fontWeight={500}>
+                            Статус доставки:
+                          </Text>
+                          <Text size="sm" color="#605E5E">
+                            {
+                              TRACKING_STATUSES[
+                                item.tracking[item.tracking.length - 1].status
+                              ]
+                            }
+                          </Text>
+                        </View>
+                        <View marginRight={33}>
+                          <Text size="md" color="$black" fontWeight={500}>
+                            Дата доставки:
+                          </Text>
+                          <Text size="sm" color="#605E5E">
+                            ТЕСТ
+                          </Text>
+                        </View>
+                      </View>
+                      {item.paymentStatus === "paid" ? (
+                        <Text size="md" color="$black" fontWeight={500}>
+                          Оплачен
+                        </Text>
+                      ) : (
+                        <View
+                          backgroundColor="#FDE9E4"
+                          padding={10}
+                          borderRadius={12}
+                        >
+                          <Text size="sm" color="$black" fontWeight={500}>
+                            Заказ не оплачен
+                          </Text>
+                          <Text size="sm" color="$black">
+                            Оплатите в течение 14 дней (до 23 августа)
+                          </Text>
+                          <Button marginTop={12} borderRadius={100} height={35}>
+                            <ButtonText fontWeight={500} size="md">
+                              Перейти к оплате
+                            </ButtonText>
+                          </Button>
+                        </View>
+                      )}
+                    </View>
+                  </Card>
+                </Pressable>
+              )}
+              keyExtractor={(item) => item.id}
+            />
+          </>
         )}
 
         {!isLoading && ordersDataState.length === 0 && (
