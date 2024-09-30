@@ -76,35 +76,45 @@ export default function Index() {
               >
                 <Card
                   bgColor="#FFFFFF"
-                  size="lg"
                   variant="filled"
+                  marginTop={12}
                   marginRight={16}
                   marginLeft={16}
                   borderColor="#E5E1E1"
                   borderWidth={1}
-                  flexDirection="row"
-                  alignItems="center"
-                  justifyContent="space-between"
                   borderRadius={16}
+                  padding={12}
                 >
-                  <View gap={3}>
-                    <Heading size="lg">Заказ от ТЕСТ</Heading>
-                    <Text size="sm" color="#605E5E">
-                      #{item.code}
-                    </Text>
-                    <Text></Text>
-                    <Text size="md" color="$black" fontWeight={500}>
-                      Статус доставки:
-                    </Text>
-                    <Text size="sm" color="#605E5E">
-                      {item.tracking[item.tracking.length - 1].status}
-                    </Text>
-                    <Text size="md" color="$black" fontWeight={500}>
-                      Дата доставки:
-                    </Text>
-                    <Text size="sm" color="#605E5E">
-                      ТЕСТ
-                    </Text>
+                  <View gap={12}>
+                    <View>
+                      <Heading size="lg">Заказ от ТЕСТ</Heading>
+                      <Text size="sm" color="#605E5E">
+                        #{item.code}
+                      </Text>
+                    </View>
+
+                    <View
+                      width="100%"
+                      flexDirection="row"
+                      justifyContent="space-between"
+                    >
+                      <View>
+                        <Text size="md" color="$black" fontWeight={500}>
+                          Статус доставки:
+                        </Text>
+                        <Text size="sm" color="#605E5E">
+                          {item.tracking[item.tracking.length - 1].status}
+                        </Text>
+                      </View>
+                      <View marginRight={33}>
+                        <Text size="md" color="$black" fontWeight={500}>
+                          Дата доставки:
+                        </Text>
+                        <Text size="sm" color="#605E5E">
+                          ТЕСТ
+                        </Text>
+                      </View>
+                    </View>
                     <Text size="md" color="$black" fontWeight={500}>
                       {item.paymentStatus === "paid"
                         ? "Оплачен"
