@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { selectUserData } from "@/store/slices/user";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/firebase-config";
+import { TRACKING_STATUSES } from "@/assets/data";
 
 export default function Index() {
   const user = useAppSelector(selectUserData);
@@ -103,7 +104,7 @@ export default function Index() {
                           Статус доставки:
                         </Text>
                         <Text size="sm" color="#605E5E">
-                          {item.tracking[item.tracking.length - 1].status}
+                          {TRACKING_STATUSES[item.tracking[item.tracking.length - 1].status]}
                         </Text>
                       </View>
                       <View marginRight={33}>
