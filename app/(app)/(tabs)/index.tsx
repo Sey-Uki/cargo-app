@@ -88,17 +88,28 @@ export default function Index() {
                   borderRadius={16}
                 >
                   <View gap={3}>
-                    <Heading size="md">{item.id}</Heading>
-                    <Text size="sm" color="$black"></Text>
-                    {item.status !== "transit" && (
-                      <Text
-                        size="sm"
-                        color={item.status === "paid" ? "#157C13" : "#000000"}
-                        fontWeight={500}
-                      >
-                        {item.status === "paid" ? "Оплачено" : "Ждет оплаты"}
-                      </Text>
-                    )}
+                    <Heading size="md">Заказ от ТЕСТ</Heading>
+                    <Text size="sm" color="$black">
+                      #{item.code}
+                    </Text>
+                    <Text></Text>
+                    <Text>Статус доставки:</Text>
+                    <Text>
+                      {item.tracking[item.tracking.length - 1].status}
+                    </Text>
+                    <Text>Дата доставки:</Text>
+                    <Text>ТЕСТ</Text>
+                    <Text
+                      size="sm"
+                      color={
+                        item.paymentStatus === "paid" ? "#157C13" : "#000000"
+                      }
+                      fontWeight={500}
+                    >
+                      {item.paymentStatus === "paid"
+                        ? "Оплачено"
+                        : "Ждет оплаты"}
+                    </Text>
                   </View>
 
                   <ArrowRight />
