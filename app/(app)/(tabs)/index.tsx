@@ -1,4 +1,12 @@
-import { Card, Heading, Spinner, Text, View } from "@gluestack-ui/themed";
+import {
+  Button,
+  ButtonText,
+  Card,
+  Heading,
+  Spinner,
+  Text,
+  View,
+} from "@gluestack-ui/themed";
 import { ArrowRight } from "@/components/ArrowRight";
 import { TopBar } from "@/components/TopBar";
 import { useAppSelector } from "@/store";
@@ -116,11 +124,32 @@ export default function Index() {
                         </Text>
                       </View>
                     </View>
-                    <Text size="md" color="$black" fontWeight={500}>
-                      {item.paymentStatus === "paid"
-                        ? "Оплачен"
-                        : "Заказ не оплачен"}
-                    </Text>
+                    {item.paymentStatus === "paid" ? (
+                      <Text size="md" color="$black" fontWeight={500}>
+                        Оплачен
+                      </Text>
+                    ) : (
+                      <View
+                        backgroundColor="#FDE9E4"
+                        padding={10}
+                        borderRadius={12}
+                      >
+                        <Text size="sm" color="$black" fontWeight={500}>
+                          Заказ не оплачен
+                        </Text>
+                        <Text size="sm" color="$black">
+                          Оплатите в течение 14 дней (до 23 августа)
+                        </Text>
+                        <Button marginTop={12} borderRadius={100} height={35}>
+                          <ButtonText
+                            fontWeight={500}
+                            size="md"
+                          >
+                            Перейти к оплате
+                          </ButtonText>
+                        </Button>
+                      </View>
+                    )}
                   </View>
                 </Card>
               </Pressable>
