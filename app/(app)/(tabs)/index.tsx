@@ -215,29 +215,17 @@ export default function Index() {
                           </Text>
                         </View>
                       </View>
-                      {item.paymentStatus === "paid" ? (
-                        <Text size="md" color="$black" fontWeight={500}>
-                          Оплачен
-                        </Text>
-                      ) : (
-                        <View
-                          backgroundColor="#FDE9E4"
-                          padding={10}
-                          borderRadius={12}
-                        >
-                          <Text size="sm" color="$black" fontWeight={500}>
-                            Заказ не оплачен
-                          </Text>
-                          <Text size="sm" color="$black">
-                            Оплатите в течение 14 дней (до 23 августа)
-                          </Text>
-                          <Button marginTop={12} borderRadius={100} height={35}>
-                            <ButtonText fontWeight={500} size="md">
-                              Перейти к оплате
-                            </ButtonText>
-                          </Button>
-                        </View>
-                      )}
+                      <Text
+                        size="md"
+                        color={
+                          item.paymentStatus === "paid" ? "$black" : "#FF3B30"
+                        }
+                        fontWeight={500}
+                      >
+                        {item.paymentStatus === "paid"
+                          ? "Оплачен"
+                          : "Не оплачен"}
+                      </Text>
 
                       <View flexDirection="row" gap={6}>
                         {item.images.map((image: any) => (
