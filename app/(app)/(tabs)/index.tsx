@@ -49,8 +49,21 @@ type OrderItem = {
   images?: any;
 };
 
+const filters = ["active", "finished", "wait", "paid"] as const;
+
+type FilterType = (typeof filters)[number];
+
+const filtersHash: Record<FilterType, string> = {
+  active: "Активный",
+  finished: "Завершенный",
+  wait: "Ждут оплаты",
+  paid: "Оплаченый",
+};
+
 export default function Index() {
   const user = useAppSelector(selectUserData);
+
+  const [selectedFilter, setSelectedFilter] = useState<FilterType>("active");
 
   const [isLoading, setIsLoading] = useState(false);
   const [ordersDataState, setOrdersDataState] = useState<OrderItem[]>([]);
@@ -90,13 +103,6 @@ export default function Index() {
     getOrders();
   }, []);
 
-  const filter = [
-    { title: "Активный", status: true },
-    { title: "Ждут оплаты", status: false },
-    { title: "Оплаченый", status: false },
-    { title: "Завершенный", status: false },
-  ];
-
   return (
     <View flex={1} backgroundColor="#fff">
       <View style={{ height: 70 }} />
@@ -113,9 +119,9 @@ export default function Index() {
               style={{ flexDirection: "row", marginTop: 16, marginLeft: 16 }}
               horizontal
               showsHorizontalScrollIndicator={false}
-              data={filter}
+              data={filters}
               renderItem={({ item }) =>
-                item.status ? (
+                selectedFilter === item ? (
                   <View
                     borderRadius={8}
                     backgroundColor="#007AFF"
@@ -127,28 +133,30 @@ export default function Index() {
                       paddingVertical={6}
                       size="sm"
                     >
-                      {item.title}
+                      {filtersHash[item]}
                     </Text>
                   </View>
                 ) : (
-                  <View
-                    borderRadius={8}
-                    borderColor="#79747E"
-                    borderWidth={1}
-                    marginRight={6}
-                  >
-                    <Text
-                      color="#49454F"
-                      paddingHorizontal={12}
-                      paddingVertical={6}
-                      size="sm"
+                  <Pressable onPress={() => setSelectedFilter(item)}>
+                    <View
+                      borderRadius={8}
+                      borderColor="#79747E"
+                      borderWidth={1}
+                      marginRight={6}
                     >
-                      {item.title}
-                    </Text>
-                  </View>
+                      <Text
+                        color="#49454F"
+                        paddingHorizontal={12}
+                        paddingVertical={6}
+                        size="sm"
+                      >
+                        {filtersHash[item]}
+                      </Text>
+                    </View>
+                  </Pressable>
                 )
               }
-              keyExtractor={(item) => item.title}
+              keyExtractor={(item) => item}
             />
             <FlatList
               style={{ height: "100%" }}
