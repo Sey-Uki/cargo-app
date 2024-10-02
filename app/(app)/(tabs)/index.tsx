@@ -19,7 +19,7 @@ import { Image } from "@gluestack-ui/themed";
 type OrderItem = {
   userId: string;
   code: string;
-  deliveryDate: Date;
+  deliveryDate: string;
   paymentDate: Date | null;
   tracking: {
     status: "toMoscow" | "inMoscow" | "toRecipient";
@@ -85,7 +85,6 @@ export default function Index() {
       if (ordersData === undefined) {
         throw new Error("Пользователь с такими кодом и паролем не существует");
       }
-      console.log(ordersData[1].tracking[0].date);
       setOrdersDataState(ordersData);
     } catch (error: any) {
       setIsLoading(false);
@@ -209,7 +208,7 @@ export default function Index() {
                             Дата доставки:
                           </Text>
                           <Text size="sm" color="#605E5E">
-                            ТЕСТ
+                            {new Date(item.deliveryDate).toLocaleDateString()}
                           </Text>
                         </View>
                       </View>
