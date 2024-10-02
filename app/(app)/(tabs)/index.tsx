@@ -1,6 +1,4 @@
 import {
-  Button,
-  ButtonText,
   Card,
   Heading,
   Spinner,
@@ -27,7 +25,6 @@ type OrderItem = {
     status: "toMoscow" | "inMoscow" | "toRecipient";
     date: string;
   }[];
-  paymentStatus: "wait" | "paid";
   orderStatus: "active" | "finished";
   invoice: {
     title: string;
@@ -88,6 +85,7 @@ export default function Index() {
       if (ordersData === undefined) {
         throw new Error("Пользователь с такими кодом и паролем не существует");
       }
+      console.log(ordersData[1].tracking[0].date);
       setOrdersDataState(ordersData);
     } catch (error: any) {
       setIsLoading(false);
@@ -201,7 +199,7 @@ export default function Index() {
                           <Text size="sm" color="#605E5E">
                             {
                               TRACKING_STATUSES[
-                                item.tracking[item.tracking.length - 1].status
+                                item.tracking?.[item.tracking.length - 1].status
                               ]
                             }
                           </Text>
@@ -217,14 +215,10 @@ export default function Index() {
                       </View>
                       <Text
                         size="md"
-                        color={
-                          item.paymentStatus === "paid" ? "$black" : "#FF3B30"
-                        }
+                        color={item.paymentDate ? "$black" : "#FF3B30"}
                         fontWeight={500}
                       >
-                        {item.paymentStatus === "paid"
-                          ? "Оплачен"
-                          : "Не оплачен"}
+                        {item.paymentDate ? "Оплачен" : "Не оплачен"}
                       </Text>
 
                       <View flexDirection="row" gap={6}>
