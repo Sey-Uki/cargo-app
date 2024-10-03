@@ -16,6 +16,7 @@ export const ImageList = ({ images }: Props) => {
       contentContainerStyle={{ gap: 6 }}
       style={{ marginTop: 12 }}
       showsHorizontalScrollIndicator={false}
+      keyExtractor={(item) => item.title}
       renderItem={({ item }) => {
         return (
           <Image
