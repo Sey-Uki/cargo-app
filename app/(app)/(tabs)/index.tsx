@@ -1,10 +1,4 @@
-import {
-  Card,
-  Heading,
-  Spinner,
-  Text,
-  View,
-} from "@gluestack-ui/themed";
+import { Card, Heading, Spinner, Text, View } from "@gluestack-ui/themed";
 import { TopBar } from "@/components/TopBar";
 import { useAppSelector } from "@/store";
 import { Pressable, FlatList, Alert } from "react-native";
@@ -185,32 +179,17 @@ export default function Index() {
                           #{item.code}
                         </Text>
                       </View>
-
-                      <View
-                        width="100%"
-                        flexDirection="row"
-                        justifyContent="space-between"
-                      >
-                        <View>
-                          <Text size="md" color="$black" fontWeight={500}>
-                            Статус доставки:
-                          </Text>
-                          <Text size="sm" color="#605E5E">
-                            {
-                              TRACKING_STATUSES[
-                                item.tracking?.[item.tracking.length - 1].status
-                              ]
-                            }
-                          </Text>
-                        </View>
-                        <View marginRight={33}>
-                          <Text size="md" color="$black" fontWeight={500}>
-                            Дата доставки:
-                          </Text>
-                          <Text size="sm" color="#605E5E">
-                            {new Date(item.deliveryDate).toLocaleDateString()}
-                          </Text>
-                        </View>
+                      <View>
+                        <Text size="md" color="$black" fontWeight={500}>
+                          Статус доставки:
+                        </Text>
+                        <Text size="sm" color="#605E5E">
+                          {
+                            TRACKING_STATUSES[
+                              item.tracking?.[item.tracking.length - 1].status
+                            ]
+                          }
+                        </Text>
                       </View>
                       <Text
                         size="md"
@@ -219,19 +198,18 @@ export default function Index() {
                       >
                         {item.paymentDate ? "Оплачен" : "Не оплачен"}
                       </Text>
-
-                      <View flexDirection="row" gap={6}>
-                        {item.images.map((image: any) => (
-                          <Image
-                            size="md"
-                            source={{
-                              uri: image.src,
-                            }}
-                            alt={image.title}
-                            borderRadius={8}
-                          />
-                        ))}
-                      </View>
+                    </View>
+                    <View flexDirection="row" gap={6}>
+                      {item.images.map((image: any) => (
+                        <Image
+                          size="md"
+                          source={{
+                            uri: image.src,
+                          }}
+                          alt={image.title}
+                          borderRadius={8}
+                        />
+                      ))}
                     </View>
                   </Card>
                 </Pressable>
