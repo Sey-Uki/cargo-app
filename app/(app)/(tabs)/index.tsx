@@ -8,13 +8,11 @@ import { selectUserData } from "@/store/slices/user";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/firebase-config";
 import { TRACKING_STATUSES } from "@/assets/data";
-import { Image } from "@gluestack-ui/themed";
 import { ImageList } from "@/components/ImageList";
 
 type OrderItem = {
   userId: string;
   code: string;
-  deliveryDate: string;
   paymentDate: Date | null;
   tracking: {
     status: "toMoscow" | "inMoscow" | "toRecipient";

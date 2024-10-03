@@ -1,13 +1,20 @@
 import { Image } from "@gluestack-ui/themed";
 import { FlatList } from "react-native";
 
-export const ImageList = ({ images }: any) => {
+type Props = {
+  images: {
+    src: string;
+    title: string;
+  }[];
+};
+
+export const ImageList = ({ images }: Props) => {
   return (
     <FlatList
       data={images}
       horizontal
-      contentContainerStyle={{gap: 6}}
-      style={{marginTop: 12}}
+      contentContainerStyle={{ gap: 6 }}
+      style={{ marginTop: 12 }}
       showsHorizontalScrollIndicator={false}
       renderItem={({ item }) => {
         return (
