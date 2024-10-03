@@ -9,10 +9,12 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/firebase-config";
 import { TRACKING_STATUSES } from "@/assets/data";
 import { ImageList } from "@/components/ImageList";
+import { localizeDate } from "@/utils";
 
 type OrderItem = {
   userId: string;
   code: string;
+  createdate: string;
   paymentDate: Date | null;
   tracking: {
     status: "toMoscow" | "inMoscow" | "toRecipient";
@@ -179,7 +181,9 @@ export default function Index() {
                       >
                         <View gap={12}>
                           <View>
-                            <Heading size="lg">Заказ от ТЕСТ</Heading>
+                            <Heading size="lg">
+                              Заказ от {localizeDate(new Date(item.createdate))}
+                            </Heading>
                             <Text size="sm" color="#605E5E">
                               #{item.code}
                             </Text>
