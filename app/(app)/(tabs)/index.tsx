@@ -9,6 +9,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/firebase-config";
 import { TRACKING_STATUSES } from "@/assets/data";
 import { Image } from "@gluestack-ui/themed";
+import { ImageList } from "@/components/ImageList";
 
 type OrderItem = {
   userId: string;
@@ -159,24 +160,24 @@ export default function Index() {
                   (selectedFilter === "paid" && item.paymentDate)
                 ) {
                   return (
-                    <Pressable
-                      onPress={() => {
-                        router.navigate({
-                          pathname: "/(cards)/[id]",
-                          params: { id: item.code },
-                        });
-                      }}
+                    <Card
+                      bgColor="#FFFFFF"
+                      variant="filled"
+                      marginTop={12}
+                      marginRight={16}
+                      marginLeft={16}
+                      borderColor="#E5E1E1"
+                      borderWidth={1}
+                      borderRadius={16}
+                      padding={12}
                     >
-                      <Card
-                        bgColor="#FFFFFF"
-                        variant="filled"
-                        marginTop={12}
-                        marginRight={16}
-                        marginLeft={16}
-                        borderColor="#E5E1E1"
-                        borderWidth={1}
-                        borderRadius={16}
-                        padding={12}
+                      <Pressable
+                        onPress={() => {
+                          router.navigate({
+                            pathname: "/(cards)/[id]",
+                            params: { id: item.code },
+                          });
+                        }}
                       >
                         <View gap={12}>
                           <View>
@@ -206,20 +207,10 @@ export default function Index() {
                             {item.paymentDate ? "Оплачен" : "Не оплачен"}
                           </Text>
                         </View>
-                        <View flexDirection="row" gap={6}>
-                          {item.images.map((image: any) => (
-                            <Image
-                              size="md"
-                              source={{
-                                uri: image.src,
-                              }}
-                              alt={image.title}
-                              borderRadius={8}
-                            />
-                          ))}
-                        </View>
-                      </Card>
-                    </Pressable>
+                      </Pressable>
+
+                      <ImageList images={item.images} />
+                    </Card>
                   );
                 }
                 return null;
