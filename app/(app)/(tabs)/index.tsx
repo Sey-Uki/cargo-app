@@ -152,68 +152,78 @@ export default function Index() {
             <FlatList
               style={{ height: "100%" }}
               data={ordersDataState}
-              renderItem={({ item }) => (
-                <Pressable
-                  onPress={() => {
-                    router.navigate({
-                      pathname: "/(cards)/[id]",
-                      params: { id: item.code },
-                    });
-                  }}
-                >
-                  <Card
-                    bgColor="#FFFFFF"
-                    variant="filled"
-                    marginTop={12}
-                    marginRight={16}
-                    marginLeft={16}
-                    borderColor="#E5E1E1"
-                    borderWidth={1}
-                    borderRadius={16}
-                    padding={12}
-                  >
-                    <View gap={12}>
-                      <View>
-                        <Heading size="lg">Заказ от ТЕСТ</Heading>
-                        <Text size="sm" color="#605E5E">
-                          #{item.code}
-                        </Text>
-                      </View>
-                      <View>
-                        <Text size="md" color="$black" fontWeight={500}>
-                          Статус доставки:
-                        </Text>
-                        <Text size="sm" color="#605E5E">
-                          {
-                            TRACKING_STATUSES[
-                              item.tracking?.[item.tracking.length - 1].status
-                            ]
-                          }
-                        </Text>
-                      </View>
-                      <Text
-                        size="md"
-                        color={item.paymentDate ? "$black" : "#FF3B30"}
-                        fontWeight={500}
+              renderItem={({ item }) => {
+                if (
+                  selectedFilter === item.orderStatus ||
+                  (selectedFilter === "wait" && !item.paymentDate) ||
+                  (selectedFilter === "paid" && item.paymentDate)
+                ) {
+                  return (
+                    <Pressable
+                      onPress={() => {
+                        router.navigate({
+                          pathname: "/(cards)/[id]",
+                          params: { id: item.code },
+                        });
+                      }}
+                    >
+                      <Card
+                        bgColor="#FFFFFF"
+                        variant="filled"
+                        marginTop={12}
+                        marginRight={16}
+                        marginLeft={16}
+                        borderColor="#E5E1E1"
+                        borderWidth={1}
+                        borderRadius={16}
+                        padding={12}
                       >
-                        {item.paymentDate ? "Оплачен" : "Не оплачен"}
-                      </Text>
-                    </View>
-                    <View flexDirection="row" gap={6}>
-                      {item.images.map((image: any) => (
-                        <Image
-                          size="md"
-                          source={{
-                            uri: image.src,
-                          }}
-                          alt={image.title}
-                          borderRadius={8}
-                        />
-                      ))}
-                    </View>
-                  </Card>
-                </Pressable>
-              )}
+                        <View gap={12}>
+                          <View>
+                            <Heading size="lg">Заказ от ТЕСТ</Heading>
+                            <Text size="sm" color="#605E5E">
+                              #{item.code}
+                            </Text>
+                          </View>
+                          <View>
+                            <Text size="md" color="$black" fontWeight={500}>
+                              Статус доставки:
+                            </Text>
+                            <Text size="sm" color="#605E5E">
+                              {
+                                TRACKING_STATUSES[
+                                  item.tracking?.[item.tracking.length - 1]
+                                    .status
+                                ]
+                              }
+                            </Text>
+                          </View>
+                          <Text
+                            size="md"
+                            color={item.paymentDate ? "$black" : "#FF3B30"}
+                            fontWeight={500}
+                          >
+                            {item.paymentDate ? "Оплачен" : "Не оплачен"}
+                          </Text>
+                        </View>
+                        <View flexDirection="row" gap={6}>
+                          {item.images.map((image: any) => (
+                            <Image
+                              size="md"
+                              source={{
+                                uri: image.src,
+                              }}
+                              alt={image.title}
+                              borderRadius={8}
+                            />
+                          ))}
+                        </View>
+                      </Card>
+                    </Pressable>
+                  );
+                }
+                return null;
+              }}
               keyExtractor={(item) => item.code}
             />
           </>
