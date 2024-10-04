@@ -1,6 +1,6 @@
-import { FilterType } from "@/app/types/orders";
+import { FilterType, TrackingType } from "@/app/types/orders";
 
-export const TRACKING_STATUSES = {
+export const TRACKING_STATUSES: Record<TrackingType, string> = {
   toMoscow: "Выехал из Китая в Москву",
   inMoscow: "На складе в Москве",
   toRecipient: "Выехал к получателю",
