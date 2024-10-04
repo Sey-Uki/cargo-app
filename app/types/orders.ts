@@ -3,16 +3,22 @@ export type ImageItem = {
   title: string;
 };
 
+export type FilterType = "active" | "finished" | "wait" | "paid";
+
+export type TrackingType = "toMoscow" | "inMoscow" | "toRecipient";
+
+export type OrderStatusType = "active" | "finished";
+
 export type OrderItem = {
   userId: string;
   code: string;
   createdate: string;
   paymentDate: Date | null;
   tracking: {
-    status: "toMoscow" | "inMoscow" | "toRecipient";
+    status: TrackingType;
     date: string;
   }[];
-  orderStatus: "active" | "finished";
+  orderStatus: OrderStatusType;
   invoice: {
     title: string;
     weight: number;
@@ -32,5 +38,3 @@ export type OrderItem = {
   magicTransImage?: ImageItem;
   images?: ImageItem[];
 };
-
-export type FilterType = "active" | "finished" | "wait" | "paid";
