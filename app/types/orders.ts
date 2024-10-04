@@ -32,3 +32,5 @@ export type OrderItem = {
   magicTransImage?: ImageItem;
   images?: ImageItem[];
 };
+
+export type FilterType = "active" | "finished" | "wait" | "paid";

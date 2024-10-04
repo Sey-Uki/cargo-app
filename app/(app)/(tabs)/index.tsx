@@ -7,21 +7,10 @@ import { useEffect, useState } from "react";
 import { selectUserData } from "@/store/slices/user";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/firebase-config";
-import { TRACKING_STATUSES } from "@/assets/data";
+import { FILTER_HASH, FILTERS, TRACKING_STATUSES } from "@/app/data/orders";
 import { ImageList } from "@/components/ImageList";
 import { localizeDate } from "@/utils";
-import { OrderItem } from "@/app/types/orders";
-
-const filters = ["active", "finished", "wait", "paid"] as const;
-
-type FilterType = (typeof filters)[number];
-
-const filtersHash: Record<FilterType, string> = {
-  active: "Активный",
-  finished: "Завершенный",
-  wait: "Ждут оплаты",
-  paid: "Оплаченый",
-};
+import { FilterType, OrderItem } from "@/app/types/orders";
 
 export default function Index() {
   const user = useAppSelector(selectUserData);
@@ -82,7 +71,7 @@ export default function Index() {
               style={{ flexDirection: "row", marginTop: 16, marginLeft: 16 }}
               horizontal
               showsHorizontalScrollIndicator={false}
-              data={filters}
+              data={FILTERS}
               renderItem={({ item }) =>
                 selectedFilter === item ? (
                   <View
@@ -96,7 +85,7 @@ export default function Index() {
                       paddingVertical={6}
                       size="sm"
                     >
-                      {filtersHash[item]}
+                      {FILTER_HASH[item]}
                     </Text>
                   </View>
                 ) : (
@@ -113,7 +102,7 @@ export default function Index() {
                         paddingVertical={6}
                         size="sm"
                       >
-                        {filtersHash[item]}
+                        {FILTER_HASH[item]}
                       </Text>
                     </View>
                   </Pressable>
