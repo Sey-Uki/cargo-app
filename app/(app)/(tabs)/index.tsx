@@ -1,16 +1,15 @@
 import { Card, Heading, Spinner, Text, View } from "@gluestack-ui/themed";
 import { TopBar } from "@/components/TopBar";
 import { useAppSelector } from "@/store";
-import { Pressable, FlatList, Alert } from "react-native";
+import { Pressable, FlatList } from "react-native";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { selectUserData } from "@/store/slices/user";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "@/firebase-config";
 import { FILTER_HASH, FILTERS, TRACKING_STATUSES } from "@/app/data/orders";
 import { ImageList } from "@/components/ImageList";
 import { localizeDate } from "@/utils";
 import { FilterType, OrderItem } from "@/app/types/orders";
+import { getOrdersByUserId } from "@/app/api/orders";
 
 export default function Index() {
   const user = useAppSelector(selectUserData);
@@ -20,40 +19,15 @@ export default function Index() {
   const [isLoading, setIsLoading] = useState(false);
   const [ordersDataState, setOrdersDataState] = useState<OrderItem[]>([]);
 
-  const getOrders = async () => {
-    try {
-      const ordersCollection = collection(db, "orders");
-
-      const ordersSnapshot = await getDocs(ordersCollection);
-
-      const ordersList = ordersSnapshot.docs.map((doc: any) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      const ordersData = ordersList.filter((array) => {
-        return user?.userId === array.userId;
-      });
-
-      setIsLoading(false);
-
-      if (ordersData === undefined) {
-        throw new Error("Пользователь с такими кодом и паролем не существует");
-      }
-      setOrdersDataState(ordersData);
-    } catch (error: any) {
-      setIsLoading(false);
-
-      Alert.alert("Ошибка", error?.message || "Что-то пошло не так");
-
-      console.error("Ошибка при получении данных из о пользователе: ", error);
-    }
-  };
-
   useEffect(() => {
+    if (!user?.userId) return;
+
     setIsLoading(true);
-    getOrders();
-  }, []);
+
+    getOrdersByUserId(user.userId)
+      .then((orders) => setOrdersDataState(orders))
+      .finally(() => setIsLoading(false));
+  }, [user?.userId]);
 
   return (
     <View flex={1} backgroundColor="#fff">
