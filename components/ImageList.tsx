@@ -1,11 +1,9 @@
+import { ImageItem } from "@/app/types/orders";
 import { Image } from "@gluestack-ui/themed";
 import { FlatList } from "react-native";
 
 type Props = {
-  images: {
-    src: string;
-    title: string;
-  }[];
+  images: ImageItem[];
 };
 
 export const ImageList = ({ images }: Props) => {
