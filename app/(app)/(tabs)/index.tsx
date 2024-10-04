@@ -17,7 +17,7 @@ export default function Index() {
   const [selectedFilter, setSelectedFilter] = useState<FilterType>("active");
 
   const [isLoading, setIsLoading] = useState(false);
-  const [ordersDataState, setOrdersDataState] = useState<OrderItem[]>([]);
+  const [orders, setOrders] = useState<OrderItem[]>([]);
 
   useEffect(() => {
     if (!user?.userId) return;
@@ -25,7 +25,7 @@ export default function Index() {
     setIsLoading(true);
 
     getOrdersByUserId(user.userId)
-      .then((orders) => setOrdersDataState(orders))
+      .then((data) => setOrders(data))
       .finally(() => setIsLoading(false));
   }, [user?.userId]);
 
@@ -39,30 +39,34 @@ export default function Index() {
         </View>
       )}
       <View height="100%" backgroundColor="#F2F2F7">
-        {!isLoading && ordersDataState.length > 0 && (
+        {!isLoading && orders.length > 0 && (
           <>
             <FlatList
               style={{ flexDirection: "row", marginTop: 16, marginLeft: 16 }}
               horizontal
               showsHorizontalScrollIndicator={false}
               data={FILTERS}
-              renderItem={({ item }) =>
-                selectedFilter === item ? (
-                  <View
-                    borderRadius={8}
-                    backgroundColor="#007AFF"
-                    marginRight={6}
-                  >
-                    <Text
-                      color={"$white"}
-                      paddingHorizontal={12}
-                      paddingVertical={6}
-                      size="sm"
+              renderItem={({ item }) => {
+                if (selectedFilter === item) {
+                  return (
+                    <View
+                      borderRadius={8}
+                      backgroundColor="#007AFF"
+                      marginRight={6}
                     >
-                      {FILTER_HASH[item]}
-                    </Text>
-                  </View>
-                ) : (
+                      <Text
+                        color={"$white"}
+                        paddingHorizontal={12}
+                        paddingVertical={6}
+                        size="sm"
+                      >
+                        {FILTER_HASH[item]}
+                      </Text>
+                    </View>
+                  );
+                }
+
+                return (
                   <Pressable onPress={() => setSelectedFilter(item)}>
                     <View
                       borderRadius={8}
@@ -80,13 +84,13 @@ export default function Index() {
                       </Text>
                     </View>
                   </Pressable>
-                )
-              }
+                );
+              }}
               keyExtractor={(item) => item}
             />
             <FlatList
               style={{ height: "100%" }}
-              data={ordersDataState}
+              data={orders}
               renderItem={({ item }) => {
                 if (
                   selectedFilter === item.orderStatus ||
@@ -122,6 +126,7 @@ export default function Index() {
                               #{item.code}
                             </Text>
                           </View>
+
                           <View>
                             <Text size="md" color="$black" fontWeight={500}>
                               Статус доставки:
@@ -135,6 +140,7 @@ export default function Index() {
                               }
                             </Text>
                           </View>
+                          
                           <Text
                             size="md"
                             color={item.paymentDate ? "$black" : "#FF3B30"}
@@ -144,6 +150,7 @@ export default function Index() {
                           </Text>
                         </View>
                       </Pressable>
+
                       {item.images && <ImageList images={item.images} />}
                     </Card>
                   );
@@ -155,7 +162,7 @@ export default function Index() {
           </>
         )}
 
-        {!isLoading && ordersDataState.length === 0 && (
+        {!isLoading && orders.length === 0 && (
           <Text paddingTop={4}>Нет данных</Text>
         )}
       </View>
