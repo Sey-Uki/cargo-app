@@ -29,12 +29,6 @@ export type OrderItem = {
     package: number;
     finalPrice: number;
   };
-  hiddenInvoice: {
-    density: number;
-    transAmount: number;
-    elevenRate: number;
-    orderIncome: number;
-  };
-  magicTransImage?: ImageItem;
-  images?: ImageItem[];
+  magicTransImage: ImageItem | null;
+  images: ImageItem[] | null;
 };
