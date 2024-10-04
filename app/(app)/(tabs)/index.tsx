@@ -10,36 +10,7 @@ import { db } from "@/firebase-config";
 import { TRACKING_STATUSES } from "@/assets/data";
 import { ImageList } from "@/components/ImageList";
 import { localizeDate } from "@/utils";
-
-type OrderItem = {
-  userId: string;
-  code: string;
-  createdate: string;
-  paymentDate: Date | null;
-  tracking: {
-    status: "toMoscow" | "inMoscow" | "toRecipient";
-    date: string;
-  }[];
-  orderStatus: "active" | "finished";
-  invoice: {
-    title: string;
-    weight: number;
-    volume: number;
-    price: number;
-    goods: number;
-    insurance: number;
-    package: number;
-    finalPrice: number;
-  };
-  hiddenInvoice: {
-    density: number;
-    transAmount: number;
-    elevenRate: number;
-    orderIncome: number;
-  };
-  magicTransImage?: any;
-  images?: any;
-};
+import { OrderItem } from "@/app/types/orders";
 
 const filters = ["active", "finished", "wait", "paid"] as const;
 
@@ -80,7 +51,6 @@ export default function Index() {
       if (ordersData === undefined) {
         throw new Error("Пользователь с такими кодом и паролем не существует");
       }
-      console.log(ordersData)
       setOrdersDataState(ordersData);
     } catch (error: any) {
       setIsLoading(false);
@@ -211,8 +181,7 @@ export default function Index() {
                           </Text>
                         </View>
                       </Pressable>
-
-                      <ImageList images={item.images} />
+                      {item.images && <ImageList images={item.images} />}
                     </Card>
                   );
                 }
