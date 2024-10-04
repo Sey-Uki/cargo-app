@@ -80,6 +80,7 @@ export default function Index() {
       if (ordersData === undefined) {
         throw new Error("Пользователь с такими кодом и паролем не существует");
       }
+      console.log(ordersData)
       setOrdersDataState(ordersData);
     } catch (error: any) {
       setIsLoading(false);
