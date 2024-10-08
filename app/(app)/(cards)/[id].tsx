@@ -61,7 +61,7 @@ export default function Info() {
   }
 
   return (
-    <View flex={1}>
+    <View flex={1} backgroundColor="white">
       <View style={{ height: 70 }} />
       <TopBar
         button={{
@@ -71,8 +71,14 @@ export default function Info() {
         text={`#${order.code} от ${localizeDate(new Date(order.createdate))}`}
       />
 
-      <View paddingHorizontal={16} flex={1}>
-        <View paddingTop={16} flex={1} justifyContent="space-between">
+      <View flex={1} backgroundColor="#F2F2F7">
+        <View
+          borderBottomRightRadius={8}
+          borderBottomLeftRadius={8}
+          padding={16}
+          justifyContent="space-between"
+          backgroundColor="white"
+        >
           <View>
             <Heading marginBottom={12} size="xl">
               Отправка
@@ -203,7 +209,7 @@ export default function Info() {
               <Icon as={CloseIcon} width={30} height={30} />
             </ModalCloseButton>
             <Image
-              source={{uri: order.magicTransImage?.src}}
+              source={{ uri: order.magicTransImage?.src }}
               style={{ width: "100%", objectFit: "cover", flex: 1 }}
               alt={order.magicTransImage?.title}
             />
