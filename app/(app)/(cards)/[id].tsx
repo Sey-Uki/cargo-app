@@ -1,7 +1,9 @@
 import { getOrderById } from "@/app/api/orders";
+import { TRACKING, TRACKING_STATUSES } from "@/app/data/orders";
 import { OrderItem } from "@/app/types/orders";
 import { ArrowLeft } from "@/components/ArrowLeft";
 import { TopBar } from "@/components/TopBar";
+import { localizeDate } from "@/utils";
 
 import {
   Button,
@@ -18,9 +20,11 @@ import {
   ModalCloseButton,
   View,
   Spinner,
+  ArrowRightIcon,
 } from "@gluestack-ui/themed";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
+import { Image } from "react-native";
 
 export default function Info() {
   const { id } = useLocalSearchParams();
@@ -43,67 +47,104 @@ export default function Info() {
   }, [id]);
 
   if (!order) {
-    return <Text color="$black">Нет данных</Text>;
+    return (
+      <>
+        <View style={{ height: 70 }} />
+        {isLoading && (
+          <View height="100%" backgroundColor="#F2F2F7">
+            <Spinner color="$emerald600" paddingTop={50} size="large" />
+          </View>
+        )}
+        <Text color="$black">Нет данных</Text>
+      </>
+    );
   }
 
   return (
     <View flex={1}>
       <View style={{ height: 70 }} />
-      {isLoading && (
-        <View height="100%" backgroundColor="#F2F2F7">
-          <Spinner color="$emerald600" paddingTop={50} size="large" />
-        </View>
-      )}
       <TopBar
         button={{
           jsx: <ArrowLeft />,
           onPress: () => router.back(),
         }}
-        text={`#${order.code}`}
+        text={`#${order.code} от ${localizeDate(new Date(order.createdate))}`}
       />
 
-      <View margin={15} flex={1} justifyContent="space-between">
-        <View>
-          <Heading size="xl">Заказ #{order.id}</Heading>
-          {/* <Image
-            source={order.img}
-            style={{ width: "100%", height: 150 }}
-            marginBottom={17}
-            marginTop={27}
-            alt="Груз"
-          /> */}
-          <View gap={11}>
-            <View flexDirection="row" justifyContent="space-between">
-              <Text color="$black">Вес</Text>
-              <Text color="$black">{order.weight}</Text>
-            </View>
-            <View flexDirection="row" justifyContent="space-between">
-              <Text color="$black">Объем</Text>
-              <Text color="$black">{order.volume}</Text>
-            </View>
-            <View flexDirection="row" justifyContent="space-between">
-              <Text color="$black">Трекинг</Text>
-              <Text color="$black">
-                {/* {order.location
-                  .split("-")
-                  [order.location.split("-").length - 1].trim()} */}
+      <View paddingHorizontal={16} flex={1}>
+        <View paddingTop={16} flex={1} justifyContent="space-between">
+          <View>
+            <Heading marginBottom={12} size="xl">
+              Отправка
+            </Heading>
+            <View>
+              <Text color="#939090" size="sm">
+                Статус
               </Text>
+              <View flexDirection="row" justifyContent="space-between">
+                <Text fontWeight={500} size="md" color="$black">
+                  {
+                    TRACKING_STATUSES[
+                      order.tracking?.[order.tracking.length - 1].status
+                    ]
+                  }
+                </Text>
+                <Icon as={ArrowRightIcon} color="#939090" />
+                <Text color="#797676">
+                  {TRACKING_STATUSES[
+                    TRACKING[
+                      TRACKING.indexOf(
+                        order.tracking?.[order.tracking.length - 1].status
+                      ) + 1
+                    ]
+                  ] || ""}
+                </Text>
+              </View>
+              <View
+                marginVertical={12}
+                style={{ backgroundColor: "#E6E6E6", height: 1 }}
+              />
             </View>
-            <View flexDirection="row" justifyContent="space-between">
-              <Text color="$black">Статус</Text>
-              <Text color="$black">
-                {order.status === "paid" ? "Оплачено" : "Ждет оплаты"}
+            <View gap={10}>
+              <View flexDirection="row">
+                <View marginRight={139}>
+                  <Text color="#797676" size="sm">
+                    Вес
+                  </Text>
+                  <Text color="$black" size="md" fontWeight={500}>
+                    {order.invoice.weight} кг
+                  </Text>
+                </View>
+                <View>
+                  <Text color="#797676" size="sm">
+                    Объем
+                  </Text>
+                  <Text color="$black" size="md" fontWeight={500}>
+                    {order.invoice.volume} м³
+                  </Text>
+                </View>
+              </View>
+              <View>
+                <Text color="#797676" size="sm">
+                  Стоимость за 1 кг
+                </Text>
+                <Text color="$black" size="md" fontWeight={500}>
+                  {order.invoice.price} ₽
+                </Text>
+              </View>
+            </View>
+            <View
+              marginVertical={12}
+              style={{ backgroundColor: "#E6E6E6", height: 1 }}
+            />
+            <Pressable onPress={() => setShowInvoice(true)} ref={ref}>
+              <Text color="#0070FF" fontWeight={500} size="sm">
+                Открыть накладную от Magic Trans
               </Text>
-            </View>
+            </Pressable>
           </View>
-
-          <Pressable onPress={() => setShowInvoice(true)} ref={ref}>
-            <Text underline marginTop={15} color="#81838F">
-              Накладная
-            </Text>
-          </Pressable>
-
-          <View
+        </View>
+        {/* <View
             marginTop={36}
             flexDirection="row"
             justifyContent="space-between"
@@ -114,8 +155,7 @@ export default function Info() {
             <Text size="xl" fontWeight="$medium" color="$black">
               {order.cost}
             </Text>
-          </View>
-        </View>
+          </View> */}
 
         <FormControl gap={5} marginTop={15} paddingBottom={40}>
           <Button
@@ -162,11 +202,11 @@ export default function Info() {
             <ModalCloseButton alignSelf="flex-end">
               <Icon as={CloseIcon} width={30} height={30} />
             </ModalCloseButton>
-            {/* <Image
-              source={order.invoice}
+            <Image
+              source={{uri: order.magicTransImage?.src}}
               style={{ width: "100%", objectFit: "cover", flex: 1 }}
-              alt="Накладная"
-            /> */}
+              alt={order.magicTransImage?.title}
+            />
           </ModalContent>
         </Modal>
       </View>
