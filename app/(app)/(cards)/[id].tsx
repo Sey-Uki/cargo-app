@@ -1,7 +1,8 @@
+import { getOrderById } from "@/app/api/orders";
+import { OrderItem } from "@/app/types/orders";
 import { ArrowLeft } from "@/components/ArrowLeft";
 import { TopBar } from "@/components/TopBar";
-import { useAppSelector } from "@/store";
-import { selectOrders } from "@/store/slices/orders";
+
 import {
   Button,
   ButtonText,
@@ -14,20 +15,32 @@ import {
   ModalContent,
   Pressable,
   Text,
-  Image,
   ModalCloseButton,
   View,
+  Spinner,
 } from "@gluestack-ui/themed";
 import { router, useLocalSearchParams } from "expo-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Info() {
   const { id } = useLocalSearchParams();
-  const order = useAppSelector(selectOrders).find((item) => item.id === id);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [order, setOrder] = useState<OrderItem>();
 
   const [showInvoice, setShowInvoice] = useState(false);
 
   const ref = useRef(null);
+
+  useEffect(() => {
+    if (!id) return;
+
+    setIsLoading(true);
+
+    getOrderById(id as string)
+      .then((data) => setOrder(data as OrderItem))
+      .finally(() => setIsLoading(false));
+  }, [id]);
 
   if (!order) {
     return <Text color="$black">Нет данных</Text>;
@@ -36,25 +49,29 @@ export default function Info() {
   return (
     <View flex={1}>
       <View style={{ height: 70 }} />
-
+      {isLoading && (
+        <View height="100%" backgroundColor="#F2F2F7">
+          <Spinner color="$emerald600" paddingTop={50} size="large" />
+        </View>
+      )}
       <TopBar
         button={{
           jsx: <ArrowLeft />,
           onPress: () => router.back(),
         }}
-        text="Информация"
+        text={`#${order.code}`}
       />
 
       <View margin={15} flex={1} justifyContent="space-between">
         <View>
           <Heading size="xl">Заказ #{order.id}</Heading>
-          <Image
+          {/* <Image
             source={order.img}
             style={{ width: "100%", height: 150 }}
             marginBottom={17}
             marginTop={27}
             alt="Груз"
-          />
+          /> */}
           <View gap={11}>
             <View flexDirection="row" justifyContent="space-between">
               <Text color="$black">Вес</Text>
@@ -67,9 +84,9 @@ export default function Info() {
             <View flexDirection="row" justifyContent="space-between">
               <Text color="$black">Трекинг</Text>
               <Text color="$black">
-                {order.location
+                {/* {order.location
                   .split("-")
-                  [order.location.split("-").length - 1].trim()}
+                  [order.location.split("-").length - 1].trim()} */}
               </Text>
             </View>
             <View flexDirection="row" justifyContent="space-between">
@@ -145,11 +162,11 @@ export default function Info() {
             <ModalCloseButton alignSelf="flex-end">
               <Icon as={CloseIcon} width={30} height={30} />
             </ModalCloseButton>
-            <Image
+            {/* <Image
               source={order.invoice}
               style={{ width: "100%", objectFit: "cover", flex: 1 }}
               alt="Накладная"
-            />
+            /> */}
           </ModalContent>
         </Modal>
       </View>

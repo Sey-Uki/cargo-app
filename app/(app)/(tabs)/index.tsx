@@ -25,7 +25,7 @@ export default function Index() {
     if (!user?.userId) return;
 
     setRefreshing(true);
-    
+
     getOrdersByUserId(user.userId)
       .then((data) => setOrders(data))
       .finally(() => setRefreshing(false));
@@ -128,7 +128,7 @@ export default function Index() {
                         onPress={() => {
                           router.navigate({
                             pathname: "/(cards)/[id]",
-                            params: { id: item.code },
+                            params: { id: item.id },
                           });
                         }}
                       >
