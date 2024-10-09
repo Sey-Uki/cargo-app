@@ -1,7 +1,9 @@
 import { getOrderById } from "@/app/api/orders";
 import { TRACKING, TRACKING_STATUSES } from "@/app/data/orders";
 import { OrderItem } from "@/app/types/orders";
+import { Accordion } from "@/components/Accordion";
 import { ArrowLeft } from "@/components/ArrowLeft";
+import { OrderPayment } from "@/components/OrderPayment";
 import { TopBar } from "@/components/TopBar";
 import { localizeDate } from "@/utils";
 
@@ -9,7 +11,6 @@ import {
   Button,
   ButtonText,
   CloseIcon,
-  FormControl,
   Heading,
   Icon,
   Modal,
@@ -21,6 +22,7 @@ import {
   View,
   Spinner,
   ArrowRightIcon,
+  InfoIcon,
 } from "@gluestack-ui/themed";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -71,12 +73,11 @@ export default function Info() {
         text={`#${order.code} от ${localizeDate(new Date(order.createdate))}`}
       />
 
-      <View flex={1} backgroundColor="#F2F2F7">
+      <View flex={1} backgroundColor="#F2F2F7" gap={8}>
         <View
           borderBottomRightRadius={8}
           borderBottomLeftRadius={8}
           padding={16}
-          justifyContent="space-between"
           backgroundColor="white"
         >
           <View>
@@ -150,51 +151,58 @@ export default function Info() {
             </Pressable>
           </View>
         </View>
-        {/* <View
-            marginTop={36}
-            flexDirection="row"
-            justifyContent="space-between"
-          >
-            <Text size="xl" fontWeight="$medium" color="$black">
-              Итого
-            </Text>
-            <Text size="xl" fontWeight="$medium" color="$black">
-              {order.cost}
-            </Text>
-          </View> */}
+        <View borderRadius={8} padding={16} backgroundColor="white">
+          {!order.paymentDate ? (
+            <>
+              <View
+                gap={6}
+                flexDirection="row"
+                alignItems="center"
+                marginBottom={16}
+              >
+                <Icon as={InfoIcon} color="#FF0F0F" />
+                <Text color="black" fontWeight={500} size="lg">
+                  Заказ не оплачен
+                </Text>
+              </View>
 
-        <FormControl gap={5} marginTop={15} paddingBottom={40}>
-          <Button
-            bg="$black"
-            borderRadius="$md"
-            height={52}
-            onPress={() => {
-              router.navigate({
-                pathname: "/(traking)/[id]",
-                params: { id: order.id },
-              });
-            }}
-          >
-            <ButtonText fontSize="$sm" fontWeight="$medium">
-              Отслеживание
-            </ButtonText>
-          </Button>
-          <Button
-            bg="#157C13"
-            borderRadius="$md"
-            height={52}
-            onPress={() => {
-              router.navigate({
-                pathname: "/(payment)/[id]",
-                params: { id: order.id },
-              });
-            }}
-          >
-            <ButtonText fontSize="$sm" fontWeight="$medium">
-              Оплатить
-            </ButtonText>
-          </Button>
-        </FormControl>
+              <OrderPayment
+                paymentText="К оплате"
+                order={{
+                  goods: order.invoice.goods,
+                  insurance: order.invoice.insurance,
+                  package: order.invoice.package,
+                  finalPrice: order.invoice.finalPrice,
+                }}
+              />
+              <Button bg="#1A64CB" borderRadius={100} height={40} marginTop={7}>
+                <ButtonText fontSize="$sm" fontWeight="$medium">
+                  Перейти к оплате
+                </ButtonText>
+              </Button>
+            </>
+          ) : (
+            <Accordion
+              list={[
+                {
+                  id: "1",
+                  text: "Заказ оплачен",
+                  content: (
+                    <OrderPayment
+                      paymentText="Итого"
+                      order={{
+                        goods: order.invoice.goods,
+                        insurance: order.invoice.insurance,
+                        package: order.invoice.package,
+                        finalPrice: order.invoice.finalPrice,
+                      }}
+                    />
+                  ),
+                },
+              ]}
+            />
+          )}
+        </View>
 
         <Modal
           isOpen={showInvoice}
