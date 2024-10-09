@@ -221,6 +221,9 @@ export default function Info() {
         </View>
 
         <View backgroundColor="white" borderRadius={8} padding={16}>
+          <Text color="black" fontWeight={500} size="lg">
+            История перемещений
+          </Text>
           <Timeline
             style={{ paddingTop: 50 }}
             data={dataTracking}
