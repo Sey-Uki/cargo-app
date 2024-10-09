@@ -29,6 +29,7 @@ import { useEffect, useRef, useState } from "react";
 import { Image } from "react-native";
 import Timeline from "react-native-timeline-flatlist";
 import { Entypo, FontAwesome6 } from "@expo/vector-icons";
+import { ImageList } from "@/components/ImageList";
 
 export default function Info() {
   const { id } = useLocalSearchParams();
@@ -219,7 +220,7 @@ export default function Info() {
           )}
         </View>
 
-        <View backgroundColor="white" borderRadius={8} padding={24}>
+        <View backgroundColor="white" borderRadius={8} padding={16}>
           <Timeline
             style={{ paddingTop: 50 }}
             data={dataTracking}
@@ -234,6 +235,13 @@ export default function Info() {
             }}
             lineColor="#1A64CB"
           />
+        </View>
+
+        <View backgroundColor="white" borderRadius={8} padding={16}>
+          <Text color="black" fontWeight={500} size="lg">
+            Товары
+          </Text>
+          {order.images ? <ImageList images={order.images} /> : ""}
         </View>
 
         <Modal
