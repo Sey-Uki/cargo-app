@@ -27,6 +27,8 @@ import {
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Image } from "react-native";
+import Timeline from "react-native-timeline-flatlist";
+import { Entypo, FontAwesome6 } from "@expo/vector-icons";
 
 export default function Info() {
   const { id } = useLocalSearchParams();
@@ -61,6 +63,19 @@ export default function Info() {
       </>
     );
   }
+
+  const dataTracking = order.tracking?.map((item, index) => {
+    if (index === order.tracking.length - 1)
+      return {
+        title: item.status,
+        icon: <Entypo name="location" size={24} color="#1A64CB" />,
+      };
+
+    return {
+      title: item.status,
+      icon: <FontAwesome6 name="plane-up" size={24} color="#1A64CB" />,
+    };
+  });
 
   return (
     <View flex={1} backgroundColor="white">
@@ -202,6 +217,23 @@ export default function Info() {
               ]}
             />
           )}
+        </View>
+
+        <View backgroundColor="white" borderRadius={8} padding={24}>
+          <Timeline
+            style={{ paddingTop: 50 }}
+            data={dataTracking}
+            isUsingFlatlist={true}
+            titleStyle={{ fontSize: 20, marginTop: -11, marginBottom: 50 }}
+            innerCircle={"icon"}
+            circleStyle={{
+              backgroundColor: "none",
+              width: 24,
+              height: 24,
+              marginLeft: -3,
+            }}
+            lineColor="#1A64CB"
+          />
         </View>
 
         <Modal
