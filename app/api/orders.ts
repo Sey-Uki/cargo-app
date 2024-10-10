@@ -1,5 +1,5 @@
 import { db } from "@/firebase-config";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { Alert } from "react-native";
 import { OrderItem } from "../types/orders";
 
@@ -25,5 +25,21 @@ export const getOrdersByUserId = async (
     console.error("Ошибка при получении данных о заказах: ", error);
 
     return [];
+  }
+};
+
+export const getOrderById = async (
+  orderId: string
+) => {
+  try {
+    const docRef = doc(db, "orders", orderId);
+
+    return (await getDoc(docRef)).data();
+  } catch (error: any) {
+    Alert.alert("Ошибка", "Что-то пошло не так");
+
+    console.error("Ошибка при получении данных о заказе: ", error);
+
+    return ;
   }
 };

@@ -10,6 +10,7 @@ export type TrackingType = "toMoscow" | "inMoscow" | "toRecipient";
 export type OrderStatusType = "active" | "finished";
 
 export type OrderItem = {
+  id: string;
   userId: string;
   code: string;
   createdate: string;

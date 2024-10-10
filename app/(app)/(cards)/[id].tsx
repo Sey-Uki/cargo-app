@@ -1,12 +1,16 @@
+import { getOrderById } from "@/app/api/orders";
+import { TRACKING, TRACKING_STATUSES } from "@/app/data/orders";
+import { OrderItem } from "@/app/types/orders";
+import { Accordion } from "@/components/Accordion";
 import { ArrowLeft } from "@/components/ArrowLeft";
+import { OrderPayment } from "@/components/OrderPayment";
 import { TopBar } from "@/components/TopBar";
-import { useAppSelector } from "@/store";
-import { selectOrders } from "@/store/slices/orders";
+import { localizeDate } from "@/utils";
+
 import {
   Button,
   ButtonText,
   CloseIcon,
-  FormControl,
   Heading,
   Icon,
   Modal,
@@ -14,141 +18,255 @@ import {
   ModalContent,
   Pressable,
   Text,
-  Image,
   ModalCloseButton,
   View,
+  Spinner,
+  ArrowRightIcon,
+  InfoIcon,
 } from "@gluestack-ui/themed";
 import { router, useLocalSearchParams } from "expo-router";
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Image } from "react-native";
+import Timeline from "react-native-timeline-flatlist";
+import { Entypo, FontAwesome6 } from "@expo/vector-icons";
+import { ImageList } from "@/components/ImageList";
+import { Divider } from "@gluestack-ui/themed";
+import { InvoiceItem } from "@/components/InvoiceItem";
 
-export default function Info() {
+export default function Card() {
   const { id } = useLocalSearchParams();
-  const order = useAppSelector(selectOrders).find((item) => item.id === id);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [order, setOrder] = useState<OrderItem | undefined>();
 
   const [showInvoice, setShowInvoice] = useState(false);
 
   const ref = useRef(null);
 
-  if (!order) {
-    return <Text color="$black">Нет данных</Text>;
+  useEffect(() => {
+    if (!id) return;
+
+    setIsLoading(true);
+
+    getOrderById(id as string)
+      .then((data) => setOrder(data as OrderItem))
+      .finally(() => setIsLoading(false));
+  }, [id]);
+
+  const dataTracking = useMemo(() => {
+    if (order?.tracking?.length === 0) return [];
+
+    return order?.tracking.map((item, index) => {
+      if (index === order?.tracking.length - 1) {
+        return {
+          title: item.status,
+          icon: <Entypo name="location" size={24} color="#1A64CB" />,
+        };
+      }
+
+      return {
+        title: item.status,
+        icon: <FontAwesome6 name="plane-up" size={24} color="#1A64CB" />,
+      };
+    });
+  }, [order?.tracking]);
+
+  const unpaidOrder = useMemo(() => {
+    if (!order?.invoice) return null;
+
+    return (
+      <>
+        <View gap={6} flexDirection="row" alignItems="center" marginBottom={16}>
+          <Icon as={InfoIcon} color="#FF0F0F" />
+          <Text color="black" fontWeight={500} size="lg">
+            Заказ не оплачен
+          </Text>
+        </View>
+        <OrderPayment
+          paymentText="К оплате"
+          order={{
+            goods: order.invoice.goods,
+            insurance: order.invoice.insurance,
+            package: order.invoice.package,
+            finalPrice: order.invoice.finalPrice,
+          }}
+        />
+        <Button bg="#1A64CB" borderRadius={100} height={40} marginTop={7}>
+          <ButtonText fontSize="$sm" fontWeight="$medium">
+            Перейти к оплате
+          </ButtonText>
+        </Button>
+      </>
+    );
+  }, [order?.invoice]);
+
+  const paidOrder = useMemo(() => {
+    if (!order?.invoice) return null;
+
+    return (
+      <Accordion
+        list={[
+          {
+            id: "1",
+            text: "Заказ оплачен",
+            content: (
+              <OrderPayment
+                paymentText="Итого"
+                order={{
+                  goods: order.invoice.goods,
+                  insurance: order.invoice.insurance,
+                  package: order.invoice.package,
+                  finalPrice: order.invoice.finalPrice,
+                }}
+              />
+            ),
+          },
+        ]}
+      />
+    );
+  }, [order?.invoice]);
+
+  if (isLoading) {
+    return (
+      <>
+        <View style={{ height: 70 }} />
+        <View height="100%" backgroundColor="#F2F2F7">
+          <Spinner color="$emerald600" paddingTop={50} size="large" />
+        </View>
+      </>
+    );
   }
 
-  return (
-    <View flex={1}>
-      <View style={{ height: 70 }} />
+  if (!order) {
+    return (
+      <>
+        <View style={{ height: 70 }} />
+        <Text color="$black">Нет данных</Text>
+      </>
+    );
+  }
 
+  const onShowInvoice = () => setShowInvoice(true);
+  const onHideInvoice = () => setShowInvoice(false);
+
+  const lastTrackingStatus =
+    order.tracking?.[order.tracking.length - 1]?.status || "";
+  const currentStatus = TRACKING_STATUSES[lastTrackingStatus];
+  const nextStatusIndex = TRACKING.indexOf(lastTrackingStatus) + 1;
+  const nextStatus = TRACKING_STATUSES[TRACKING[nextStatusIndex]] || "";
+
+  return (
+    <View flex={1} backgroundColor="white">
+      <View style={{ height: 70 }} />
       <TopBar
         button={{
           jsx: <ArrowLeft />,
           onPress: () => router.back(),
         }}
-        text="Информация"
+        text={`#${order.code} от ${localizeDate(new Date(order.createdate))}`}
       />
 
-      <View margin={15} flex={1} justifyContent="space-between">
-        <View>
-          <Heading size="xl">Заказ #{order.id}</Heading>
-          <Image
-            source={order.img}
-            style={{ width: "100%", height: 150 }}
-            marginBottom={17}
-            marginTop={27}
-            alt="Груз"
-          />
-          <View gap={11}>
-            <View flexDirection="row" justifyContent="space-between">
-              <Text color="$black">Вес</Text>
-              <Text color="$black">{order.weight}</Text>
-            </View>
-            <View flexDirection="row" justifyContent="space-between">
-              <Text color="$black">Объем</Text>
-              <Text color="$black">{order.volume}</Text>
-            </View>
-            <View flexDirection="row" justifyContent="space-between">
-              <Text color="$black">Трекинг</Text>
-              <Text color="$black">
-                {order.location
-                  .split("-")
-                  [order.location.split("-").length - 1].trim()}
+      <View flex={1} backgroundColor="#F2F2F7" gap={8}>
+        <View
+          borderBottomRightRadius={8}
+          borderBottomLeftRadius={8}
+          padding={16}
+          backgroundColor="white"
+        >
+          <View>
+            <Heading marginBottom={12} size="xl">
+              Отправка
+            </Heading>
+            <View>
+              <Text color="#939090" size="sm">
+                Статус
               </Text>
-            </View>
-            <View flexDirection="row" justifyContent="space-between">
-              <Text color="$black">Статус</Text>
-              <Text color="$black">
-                {order.status === "paid" ? "Оплачено" : "Ждет оплаты"}
-              </Text>
-            </View>
-          </View>
 
-          <Pressable onPress={() => setShowInvoice(true)} ref={ref}>
-            <Text underline marginTop={15} color="#81838F">
-              Накладная
-            </Text>
-          </Pressable>
-
-          <View
-            marginTop={36}
-            flexDirection="row"
-            justifyContent="space-between"
-          >
-            <Text size="xl" fontWeight="$medium" color="$black">
-              Итого
-            </Text>
-            <Text size="xl" fontWeight="$medium" color="$black">
-              {order.cost}
-            </Text>
+              <View flexDirection="row" justifyContent="space-between">
+                <Text fontWeight={500} size="md" color="$black">
+                  {currentStatus}
+                </Text>
+                <Icon as={ArrowRightIcon} color="#939090" />
+                <Text color="#797676">{nextStatus}</Text>
+              </View>
+              <Divider
+                marginVertical={12}
+                style={{ backgroundColor: "#E6E6E6", height: 1 }}
+              />
+            </View>
+            <View gap={10}>
+              <View flexDirection="row">
+                <InvoiceItem
+                  label="Вес"
+                  value={`${order.invoice.weight} кг`}
+                  marginRight={139}
+                />
+                <InvoiceItem
+                  label="Объем"
+                  value={`${order.invoice.volume} м³`}
+                />
+              </View>
+              <InvoiceItem
+                label="Стоимость за 1 кг"
+                value={`${order.invoice.price} ₽`}
+              />
+            </View>
+            <Divider
+              marginVertical={12}
+              style={{ backgroundColor: "#E6E6E6", height: 1 }}
+            />
+            {order.magicTransImage && (
+              <Pressable onPress={onShowInvoice} ref={ref}>
+                <Text color="#0070FF" fontWeight={500} size="sm">
+                  Открыть накладную от Magic Trans
+                </Text>
+              </Pressable>
+            )}
           </View>
         </View>
+        <View borderRadius={8} padding={16} backgroundColor="white">
+          {!order.paymentDate ? unpaidOrder : paidOrder}
+        </View>
 
-        <FormControl gap={5} marginTop={15} paddingBottom={40}>
-          <Button
-            bg="$black"
-            borderRadius="$md"
-            height={52}
-            onPress={() => {
-              router.navigate({
-                pathname: "/(traking)/[id]",
-                params: { id: order.id },
-              });
+        <View backgroundColor="white" borderRadius={8} padding={16}>
+          <Text color="black" fontWeight={500} size="lg">
+            История перемещений
+          </Text>
+          <Timeline
+            style={{ paddingTop: 50 }}
+            data={dataTracking}
+            isUsingFlatlist={true}
+            titleStyle={{ fontSize: 20, marginTop: -11, marginBottom: 50 }}
+            innerCircle={"icon"}
+            circleStyle={{
+              backgroundColor: "none",
+              width: 24,
+              height: 24,
+              marginLeft: -3,
             }}
-          >
-            <ButtonText fontSize="$sm" fontWeight="$medium">
-              Отслеживание
-            </ButtonText>
-          </Button>
-          <Button
-            bg="#157C13"
-            borderRadius="$md"
-            height={52}
-            onPress={() => {
-              router.navigate({
-                pathname: "/(payment)/[id]",
-                params: { id: order.id },
-              });
-            }}
-          >
-            <ButtonText fontSize="$sm" fontWeight="$medium">
-              Оплатить
-            </ButtonText>
-          </Button>
-        </FormControl>
+            lineColor="#1A64CB"
+          />
+        </View>
 
-        <Modal
-          isOpen={showInvoice}
-          onClose={() => {
-            setShowInvoice(false);
-          }}
-          finalFocusRef={ref}
-        >
+        {order.images && (
+          <View backgroundColor="white" borderRadius={8} padding={16}>
+            <Text color="black" fontWeight={500} size="lg">
+              Товары
+            </Text>
+            <ImageList images={order.images} />
+          </View>
+        )}
+
+        <Modal isOpen={showInvoice} onClose={onHideInvoice} finalFocusRef={ref}>
           <ModalBackdrop />
           <ModalContent style={{ flex: 0.5 }}>
             <ModalCloseButton alignSelf="flex-end">
               <Icon as={CloseIcon} width={30} height={30} />
             </ModalCloseButton>
             <Image
-              source={order.invoice}
+              source={{ uri: order.magicTransImage?.src }}
               style={{ width: "100%", objectFit: "cover", flex: 1 }}
-              alt="Накладная"
+              alt={order.magicTransImage?.title}
             />
           </ModalContent>
         </Modal>
