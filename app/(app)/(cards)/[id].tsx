@@ -30,8 +30,8 @@ import { Image } from "react-native";
 import Timeline from "react-native-timeline-flatlist";
 import { Entypo, FontAwesome6 } from "@expo/vector-icons";
 import { ImageList } from "@/components/ImageList";
-import { InfoInvoice } from "@/components/InfoInvoice";
 import { Divider } from "@gluestack-ui/themed";
+import { InvoiceItem } from "@/components/InvoiceItem";
 
 export default function Card() {
   const { id } = useLocalSearchParams();
@@ -54,10 +54,10 @@ export default function Card() {
   }, [id]);
 
   const dataTracking = useMemo(() => {
-    if (!order || !order.tracking || order.tracking.length === 0) return [];
+    if (order?.tracking?.length === 0) return [];
 
-    return order.tracking.map((item, index) => {
-      if (index === order.tracking.length - 1) {
+    return order?.tracking.map((item, index) => {
+      if (index === order?.tracking.length - 1) {
         return {
           title: item.status,
           icon: <Entypo name="location" size={24} color="#1A64CB" />,
@@ -69,7 +69,62 @@ export default function Card() {
         icon: <FontAwesome6 name="plane-up" size={24} color="#1A64CB" />,
       };
     });
-  }, [order]);
+  }, [order?.tracking]);
+
+  const unpaidOrder = useMemo(() => {
+    if (!order?.invoice) return null;
+
+    return (
+      <>
+        <View gap={6} flexDirection="row" alignItems="center" marginBottom={16}>
+          <Icon as={InfoIcon} color="#FF0F0F" />
+          <Text color="black" fontWeight={500} size="lg">
+            Заказ не оплачен
+          </Text>
+        </View>
+        <OrderPayment
+          paymentText="К оплате"
+          order={{
+            goods: order.invoice.goods,
+            insurance: order.invoice.insurance,
+            package: order.invoice.package,
+            finalPrice: order.invoice.finalPrice,
+          }}
+        />
+        <Button bg="#1A64CB" borderRadius={100} height={40} marginTop={7}>
+          <ButtonText fontSize="$sm" fontWeight="$medium">
+            Перейти к оплате
+          </ButtonText>
+        </Button>
+      </>
+    );
+  }, [order?.invoice]);
+
+  const paidOrder = useMemo(() => {
+    if (!order?.invoice) return null;
+
+    return (
+      <Accordion
+        list={[
+          {
+            id: "1",
+            text: "Заказ оплачен",
+            content: (
+              <OrderPayment
+                paymentText="Итого"
+                order={{
+                  goods: order.invoice.goods,
+                  insurance: order.invoice.insurance,
+                  package: order.invoice.package,
+                  finalPrice: order.invoice.finalPrice,
+                }}
+              />
+            ),
+          },
+        ]}
+      />
+    );
+  }, [order?.invoice]);
 
   if (isLoading) {
     return (
@@ -99,42 +154,6 @@ export default function Card() {
   const currentStatus = TRACKING_STATUSES[lastTrackingStatus];
   const nextStatusIndex = TRACKING.indexOf(lastTrackingStatus) + 1;
   const nextStatus = TRACKING_STATUSES[TRACKING[nextStatusIndex]] || "";
-
-  const orderData = {
-    goods: order.invoice.goods,
-    insurance: order.invoice.insurance,
-    package: order.invoice.package,
-    finalPrice: order.invoice.finalPrice,
-  };
-
-  const renderUnpaidOrder = () => (
-    <>
-      <View gap={6} flexDirection="row" alignItems="center" marginBottom={16}>
-        <Icon as={InfoIcon} color="#FF0F0F" />
-        <Text color="black" fontWeight={500} size="lg">
-          Заказ не оплачен
-        </Text>
-      </View>
-      <OrderPayment paymentText="К оплате" order={orderData} />
-      <Button bg="#1A64CB" borderRadius={100} height={40} marginTop={7}>
-        <ButtonText fontSize="$sm" fontWeight="$medium">
-          Перейти к оплате
-        </ButtonText>
-      </Button>
-    </>
-  );
-
-  const renderPaidOrder = () => (
-    <Accordion
-      list={[
-        {
-          id: "1",
-          text: "Заказ оплачен",
-          content: <OrderPayment paymentText="Итого" order={orderData} />,
-        },
-      ]}
-    />
-  );
 
   return (
     <View flex={1} backgroundColor="white">
@@ -177,17 +196,17 @@ export default function Card() {
             </View>
             <View gap={10}>
               <View flexDirection="row">
-                <InfoInvoice
+                <InvoiceItem
                   label="Вес"
                   value={`${order.invoice.weight} кг`}
                   marginRight={139}
                 />
-                <InfoInvoice
+                <InvoiceItem
                   label="Объем"
                   value={`${order.invoice.volume} м³`}
                 />
               </View>
-              <InfoInvoice
+              <InvoiceItem
                 label="Стоимость за 1 кг"
                 value={`${order.invoice.price} ₽`}
               />
@@ -196,15 +215,17 @@ export default function Card() {
               marginVertical={12}
               style={{ backgroundColor: "#E6E6E6", height: 1 }}
             />
-            <Pressable onPress={onShowInvoice} ref={ref}>
-              <Text color="#0070FF" fontWeight={500} size="sm">
-                Открыть накладную от Magic Trans
-              </Text>
-            </Pressable>
+            {order.magicTransImage && (
+              <Pressable onPress={onShowInvoice} ref={ref}>
+                <Text color="#0070FF" fontWeight={500} size="sm">
+                  Открыть накладную от Magic Trans
+                </Text>
+              </Pressable>
+            )}
           </View>
         </View>
         <View borderRadius={8} padding={16} backgroundColor="white">
-          {!order.paymentDate ? renderUnpaidOrder() : renderPaidOrder()}
+          {!order.paymentDate ? unpaidOrder : paidOrder}
         </View>
 
         <View backgroundColor="white" borderRadius={8} padding={16}>
@@ -227,12 +248,14 @@ export default function Card() {
           />
         </View>
 
-        <View backgroundColor="white" borderRadius={8} padding={16}>
-          <Text color="black" fontWeight={500} size="lg">
-            Товары
-          </Text>
-          {order.images ? <ImageList images={order.images} /> : ""}
-        </View>
+        {order.images && (
+          <View backgroundColor="white" borderRadius={8} padding={16}>
+            <Text color="black" fontWeight={500} size="lg">
+              Товары
+            </Text>
+            <ImageList images={order.images} />
+          </View>
+        )}
 
         <Modal isOpen={showInvoice} onClose={onHideInvoice} finalFocusRef={ref}>
           <ModalBackdrop />

@@ -1,5 +1,5 @@
 import { Text, View } from "@gluestack-ui/themed";
-import { InfoPayment } from "./InfoPayment";
+import { PaymentItem } from "./PaymentItem";
 
 type OrderProps = {
   order: {
@@ -15,9 +15,9 @@ export const OrderPayment = ({ order, paymentText }: OrderProps) => {
   return (
     <View>
       <View gap={8}>
-        <InfoPayment label="Товар на сумму" value={order.goods} />
-        <InfoPayment label="Страховка" value={order.insurance} />
-        <InfoPayment label="Упаковка" value={order.package} />
+        <PaymentItem label="Товар на сумму" value={order.goods} />
+        <PaymentItem label="Страховка" value={order.insurance} />
+        <PaymentItem label="Упаковка" value={order.package} />
       </View>
 
       <View flexDirection="row" justifyContent="space-between" marginTop={15}>

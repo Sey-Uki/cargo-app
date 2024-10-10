@@ -7,7 +7,7 @@ type Props = {
   marginRight?: number;
 };
 
-export const InfoInvoice = ({ label, value, marginRight }: Props) => (
+export const InvoiceItem = ({ label, value, marginRight }: Props) => (
   <View marginRight={marginRight}>
     <Text color="#797676" size="sm">
       {label}
