@@ -19,6 +19,7 @@ export const ImageList = ({ images }: Props) => {
         return (
           <Image
             size="md"
+            key={item.title}
             source={{
               uri: item.src,
             }}
