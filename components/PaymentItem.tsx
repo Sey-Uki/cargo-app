@@ -6,7 +6,7 @@ type Props = {
   value: number;
 };
 
-export const InfoPayment = ({ label, value }: Props) => (
+export const PaymentItem = ({ label, value }: Props) => (
   <View flexDirection="row" justifyContent="space-between">
     <Text color="#797676" size="md">
       {label}
