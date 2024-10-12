@@ -5,7 +5,7 @@ import { Accordion } from "@/components/Accordion";
 import { ArrowLeft } from "@/components/ArrowLeft";
 import { OrderPayment } from "@/components/OrderPayment";
 import { TopBar } from "@/components/TopBar";
-import { localizeDate, localizeDateTime } from "@/utils";
+import { localizeDate } from "@/utils";
 
 import {
   Button,
@@ -24,15 +24,16 @@ import {
   ArrowRightIcon,
   InfoIcon,
   ScrollView,
+  Divider
 } from "@gluestack-ui/themed";
+
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Image } from "react-native";
-import Timeline from "react-native-timeline-flatlist";
-import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
+
 import { ImageList } from "@/components/ImageList";
-import { Divider } from "@gluestack-ui/themed";
 import { InvoiceItem } from "@/components/InvoiceItem";
+import { Tracking } from "@/components/Tracking";
 
 export default function Card() {
   const { id } = useLocalSearchParams();
@@ -53,43 +54,6 @@ export default function Card() {
       .then((data) => setOrder(data as OrderItem))
       .finally(() => setIsLoading(false));
   }, [id]);
-
-  const dataTracking = useMemo(() => {
-    if (order?.tracking === undefined) return []
-
-    return TRACKING.map((status, index) => {
-      const orderStatus = order.tracking[index]?.status
-      const orderDate = order.tracking[index]?.date
-
-      if (status !== orderStatus) {
-        return {
-          title: TRACKING_STATUSES[status],
-          icon: <FontAwesome name="circle" size={12} color="#E1EBF9" />,
-          color: "#939090",
-          lineColor: "#E1EAF9",
-        };
-      }
-
-      if (index === order.tracking.length - 1) {
-        return {
-          title: TRACKING_STATUSES[status],
-          icon: <FontAwesome6 name="location-dot" size={12} color="#1A64CB" />,
-          description: localizeDateTime(new Date(orderDate)),
-          color: "#1A64CB",
-          lineColor: "#1A64CB",
-        };
-      }
-
-      return {
-        title: TRACKING_STATUSES[status],
-        icon: <FontAwesome name="circle" size={12} color="#1A64CB" />,
-        description: localizeDateTime(new Date(orderDate)),
-        color: "#000000",
-        descriptionColor: "#605E5E",
-        lineColor: "#1A64CB",
-      };
-    });
-  }, [order?.tracking]);
 
   const unpaidOrder = useMemo(() => {
     if (!order?.invoice) return null;
@@ -269,62 +233,7 @@ export default function Card() {
           {!order.paymentDate ? unpaidOrder : paidOrder}
         </View>
 
-        <View
-          backgroundColor="white"
-          borderRadius={8}
-          padding={16}
-          gap={20}
-        >
-          <Text
-            color="black"
-            fontWeight={500}
-            size="lg"
-          >
-            История перемещений
-          </Text>
-
-          <Timeline
-            data={dataTracking}
-            innerCircle="icon"
-            circleStyle={{
-              backgroundColor: "none",
-              width: 12,
-              height: 12,
-              marginLeft: 2.5,
-
-              marginTop: -15,
-            }}
-            rowContainerStyle={{
-              flexDirection: 'column',
-              justifyContent: 'flex-start',
-              
-              marginTop: 18,
-            }}
-            showTime={false}
-            renderDetail={(data: any) => {
-              return (
-                <View
-                  style={{
-                    marginTop: -25,
-                  }}
-                >
-                  <Text color={data.color} size="md" fontWeight={500}>
-                    {data.title}
-                  </Text>
-
-                  {data.description && (
-                    <Text
-                      color={data.descriptionColor ?? data.color}
-                      size="sm"
-                    >
-                      {data.description}
-                    </Text>
-                  )}
-                </View>
-              );
-            }}
-          />
-        </View>
+        {order.tracking && <Tracking orderTracking={order.tracking} />}
 
         {order.images && (
           <View backgroundColor="white" borderRadius={8} padding={16}>
