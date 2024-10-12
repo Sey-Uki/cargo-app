@@ -3,6 +3,8 @@ import { RootState } from "..";
 
 export type UserData = {
   email: string;
+  phone: string;
+  code: string;
   password: string;
   firstName: string;
   lastName: string;
