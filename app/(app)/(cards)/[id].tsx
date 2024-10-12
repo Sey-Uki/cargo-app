@@ -5,7 +5,7 @@ import { Accordion } from "@/components/Accordion";
 import { ArrowLeft } from "@/components/ArrowLeft";
 import { OrderPayment } from "@/components/OrderPayment";
 import { TopBar } from "@/components/TopBar";
-import { localizeDate } from "@/utils";
+import { localizeDate, localizeDateTime } from "@/utils";
 
 import {
   Button,
@@ -23,12 +23,13 @@ import {
   Spinner,
   ArrowRightIcon,
   InfoIcon,
+  ScrollView,
 } from "@gluestack-ui/themed";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Image } from "react-native";
 import Timeline from "react-native-timeline-flatlist";
-import { Entypo, FontAwesome6 } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { ImageList } from "@/components/ImageList";
 import { Divider } from "@gluestack-ui/themed";
 import { InvoiceItem } from "@/components/InvoiceItem";
@@ -54,19 +55,38 @@ export default function Card() {
   }, [id]);
 
   const dataTracking = useMemo(() => {
-    if (order?.tracking?.length === 0) return [];
+    if (order?.tracking === undefined) return []
 
-    return order?.tracking.map((item, index) => {
-      if (index === order?.tracking.length - 1) {
+    return TRACKING.map((status, index) => {
+      const orderStatus = order.tracking[index]?.status
+      const orderDate = order.tracking[index]?.date
+
+      if (status !== orderStatus) {
         return {
-          title: item.status,
-          icon: <Entypo name="location" size={24} color="#1A64CB" />,
+          title: TRACKING_STATUSES[status],
+          icon: <FontAwesome name="circle" size={12} color="#E1EBF9" />,
+          color: "#939090",
+          lineColor: "#E1EAF9",
+        };
+      }
+
+      if (index === order.tracking.length - 1) {
+        return {
+          title: TRACKING_STATUSES[status],
+          icon: <FontAwesome6 name="location-dot" size={12} color="#1A64CB" />,
+          description: localizeDateTime(new Date(orderDate)),
+          color: "#1A64CB",
+          lineColor: "#1A64CB",
         };
       }
 
       return {
-        title: item.status,
-        icon: <FontAwesome6 name="plane-up" size={24} color="#1A64CB" />,
+        title: TRACKING_STATUSES[status],
+        icon: <FontAwesome name="circle" size={12} color="#1A64CB" />,
+        description: localizeDateTime(new Date(orderDate)),
+        color: "#000000",
+        descriptionColor: "#605E5E",
+        lineColor: "#1A64CB",
       };
     });
   }, [order?.tracking]);
@@ -156,8 +176,14 @@ export default function Card() {
   const nextStatus = TRACKING_STATUSES[TRACKING[nextStatusIndex]] || "";
 
   return (
-    <View flex={1} backgroundColor="white">
-      <View style={{ height: 70 }} />
+    <ScrollView
+      flex={1}
+      contentContainerStyle={{
+        paddingVertical: 50
+      }}
+      showsVerticalScrollIndicator={false}
+      backgroundColor="white"
+    >
       <TopBar
         button={{
           jsx: <ArrowLeft />,
@@ -166,7 +192,11 @@ export default function Card() {
         text={`#${order.code} от ${localizeDate(new Date(order.createdate))}`}
       />
 
-      <View flex={1} backgroundColor="#F2F2F7" gap={8}>
+      <View
+        flex={1}
+        backgroundColor="#F2F2F7"
+        gap={8}
+      >
         <View
           borderBottomRightRadius={8}
           borderBottomLeftRadius={8}
@@ -182,18 +212,24 @@ export default function Card() {
                 Статус
               </Text>
 
-              <View flexDirection="row" justifyContent="space-between">
-                <Text fontWeight={500} size="md" color="$black">
-                  {currentStatus}
-                </Text>
-                <Icon as={ArrowRightIcon} color="#939090" />
+              <View flexWrap="wrap" flexDirection="row" gap={5}>
+                <View flexDirection="row" alignItems="center" gap={5}>
+                  <Text fontWeight={500} size="md" color="$black">
+                    {currentStatus}
+                  </Text>
+
+                  <Icon as={ArrowRightIcon} color="#939090" />
+                </View>
+
                 <Text color="#797676">{nextStatus}</Text>
               </View>
+
               <Divider
                 marginVertical={12}
                 style={{ backgroundColor: "#E6E6E6", height: 1 }}
               />
             </View>
+
             <View gap={10}>
               <View flexDirection="row">
                 <InvoiceItem
@@ -211,40 +247,82 @@ export default function Card() {
                 value={`${order.invoice.price} ₽`}
               />
             </View>
-            <Divider
-              marginVertical={12}
-              style={{ backgroundColor: "#E6E6E6", height: 1 }}
-            />
+
             {order.magicTransImage && (
-              <Pressable onPress={onShowInvoice} ref={ref}>
-                <Text color="#0070FF" fontWeight={500} size="sm">
-                  Открыть накладную от Magic Trans
-                </Text>
-              </Pressable>
+              <>
+                <Divider
+                  marginVertical={12}
+                  style={{ backgroundColor: "#E6E6E6", height: 1 }}
+                />
+
+                <Pressable onPress={onShowInvoice} ref={ref}>
+                  <Text color="#0070FF" fontWeight={500} size="sm">
+                    Открыть накладную от Magic Trans
+                  </Text>
+                </Pressable>
+              </>
             )}
           </View>
         </View>
+
         <View borderRadius={8} padding={16} backgroundColor="white">
           {!order.paymentDate ? unpaidOrder : paidOrder}
         </View>
 
-        <View backgroundColor="white" borderRadius={8} padding={16}>
-          <Text color="black" fontWeight={500} size="lg">
+        <View
+          backgroundColor="white"
+          borderRadius={8}
+          padding={16}
+          gap={20}
+        >
+          <Text
+            color="black"
+            fontWeight={500}
+            size="lg"
+          >
             История перемещений
           </Text>
+
           <Timeline
-            style={{ paddingTop: 50 }}
             data={dataTracking}
-            isUsingFlatlist={true}
-            titleStyle={{ fontSize: 20, marginTop: -11, marginBottom: 50 }}
-            innerCircle={"icon"}
+            innerCircle="icon"
             circleStyle={{
               backgroundColor: "none",
-              width: 24,
-              height: 24,
-              marginLeft: -3,
+              width: 12,
+              height: 12,
+              marginLeft: 2.5,
+
+              marginTop: -15,
             }}
-            lineColor="#1A64CB"
+            rowContainerStyle={{
+              flexDirection: 'column',
+              justifyContent: 'flex-start',
+              
+              marginTop: 18,
+            }}
+            showTime={false}
+            renderDetail={(data: any) => {
+              return (
+                <View
+                  style={{
+                    marginTop: -25,
+                  }}
+                >
+                  <Text color={data.color} size="md" fontWeight={500}>
+                    {data.title}
+                  </Text>
+
+                  {data.description && (
+                    <Text
+                      color={data.descriptionColor ?? data.color}
+                      size="sm"
+                    >
+                      {data.description}
+                    </Text>
+                  )}
+                </View>
+              );
+            }}
           />
         </View>
 
@@ -271,6 +349,6 @@ export default function Card() {
           </ModalContent>
         </Modal>
       </View>
-    </View>
+    </ScrollView>
   );
 }
