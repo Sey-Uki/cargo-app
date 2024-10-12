@@ -1,11 +1,7 @@
-import { getOrderById } from "@/app/api/orders";
-import { TRACKING, TRACKING_STATUSES } from "@/app/data/orders";
-import { OrderItem } from "@/app/types/orders";
-import { Accordion } from "@/components/Accordion";
-import { ArrowLeft } from "@/components/ArrowLeft";
-import { OrderPayment } from "@/components/OrderPayment";
-import { TopBar } from "@/components/TopBar";
-import { localizeDate } from "@/utils";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Image } from "react-native";
+
+import { router, useLocalSearchParams } from "expo-router";
 
 import {
   Button,
@@ -27,13 +23,19 @@ import {
   Divider
 } from "@gluestack-ui/themed";
 
-import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Image } from "react-native";
+import { getOrderById } from "@/app/api/orders";
+import { TRACKING, TRACKING_STATUSES } from "@/app/data/orders";
+import { OrderItem } from "@/app/types/orders";
+
+import { localizeDate } from "@/utils";
 
 import { ImageList } from "@/components/ImageList";
 import { InvoiceItem } from "@/components/InvoiceItem";
 import { Tracking } from "@/components/Tracking";
+import { Accordion } from "@/components/Accordion";
+import { ArrowLeft } from "@/components/ArrowLeft";
+import { OrderPayment } from "@/components/OrderPayment";
+import { TopBar } from "@/components/TopBar";
 
 export default function Card() {
   const { id } = useLocalSearchParams();
