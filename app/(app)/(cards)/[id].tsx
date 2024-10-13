@@ -33,7 +33,6 @@ import { ImageList } from "@/components/ImageList";
 import { InvoiceItem } from "@/components/InvoiceItem";
 import { Tracking } from "@/components/Tracking";
 import { Accordion } from "@/components/Accordion";
-import { ArrowLeft } from "@/components/ArrowLeft";
 import { OrderPayment } from "@/components/OrderPayment";
 import { TopBar } from "@/components/TopBar";
 
@@ -151,10 +150,7 @@ export default function Card() {
       backgroundColor="white"
     >
       <TopBar
-        button={{
-          jsx: <ArrowLeft />,
-          onPress: () => router.back(),
-        }}
+        onPress={router.back}
         title={`#${order.code}`}
         text={`от ${localizeDate(new Date(order.createdate))}`}
       />
