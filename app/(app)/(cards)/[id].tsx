@@ -155,7 +155,8 @@ export default function Card() {
           jsx: <ArrowLeft />,
           onPress: () => router.back(),
         }}
-        text={`#${order.code} от ${localizeDate(new Date(order.createdate))}`}
+        title={`#${order.code}`}
+        text={`от ${localizeDate(new Date(order.createdate))}`}
       />
 
       <View

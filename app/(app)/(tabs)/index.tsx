@@ -44,7 +44,7 @@ export default function Index() {
   return (
     <View flex={1} backgroundColor="#fff">
       <View style={{ height: 70 }} />
-      <TopBar text="Все заказы" />
+      <TopBar title="Все заказы" />
       {isLoading && (
         <View height="100%" backgroundColor="#F2F2F7">
           <Spinner color="$emerald600" paddingTop={50} size="large" />

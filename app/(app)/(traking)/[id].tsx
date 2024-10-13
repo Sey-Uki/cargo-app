@@ -43,7 +43,7 @@ export default function Traking() {
           jsx: <ArrowLeft />,
           onPress: () => router.back(),
         }}
-        text="Отслеживание груза"
+        title="Отслеживание груза"
       />
       <Timeline
         style={{ paddingTop: 50 }}
