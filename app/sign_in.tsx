@@ -88,7 +88,12 @@ export default function SignIn() {
             <View>
               <Image
                 source={require("@/assets/images/logo.png")}
-                style={{ marginBottom: 46 }}
+                style={{
+                  marginBottom: 46,
+                  width: 170,
+                  height: 46,
+                  objectFit: 'contain'
+                }}
               />
               <Text fontFamily="SFProText-Medium" fontSize={22} color="$black">
                 Войти в профиль
