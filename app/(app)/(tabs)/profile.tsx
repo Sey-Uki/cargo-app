@@ -19,7 +19,7 @@ export default function Profile() {
   return (
     <View flex={1} backgroundColor="#fff">
       <View style={{ height: 70 }} />
-      <TopBar text="Профиль" />
+      <TopBar title="Профиль" />
       <View
         justifyContent="space-between"
         backgroundColor="#F2F2F7"

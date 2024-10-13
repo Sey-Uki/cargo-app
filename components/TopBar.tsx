@@ -1,3 +1,4 @@
+import { Text } from "@gluestack-ui/themed";
 import { Divider, Heading, View } from "@gluestack-ui/themed";
 import { Pressable } from "react-native";
 
@@ -6,10 +7,11 @@ type TopBarProps = {
     jsx: JSX.Element;
     onPress: () => void;
   };
-  text: string;
+  title: string;
+  text?: string;
 };
 
-export const TopBar = ({ text, button }: TopBarProps) => {
+export const TopBar = ({ title, text, button }: TopBarProps) => {
   return (
     <View>
       <View
@@ -26,11 +28,13 @@ export const TopBar = ({ text, button }: TopBarProps) => {
             {button.jsx}
           </Pressable>
         )}
+        <View padding={9}>
+          <Heading textAlign="center">
+            {title}
+          </Heading>
 
-        <Heading textAlign="center" padding={9}>
-          {text}
-        </Heading>
-
+          {text && <Text color="#605E5E" textAlign="center">{text}</Text>}
+        </View>
         <View />
       </View>
 
