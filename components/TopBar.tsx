@@ -8,15 +8,12 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Heading, View, Text } from "@gluestack-ui/themed";
 
 type TopBarProps = {
-  button: {
-    jsx: JSX.Element;
-    onPress: () => void;
-  };
+  onPress: () => void;
   title: string;
   text: string;
 };
 
-export const TopBar = React.memo(({ title, text, button }: TopBarProps) => {
+export const TopBar = React.memo(({ title, text, onPress }: TopBarProps) => {
   const onCopy = useCallback(async() => {
     await Clipboard.setStringAsync(title);
   }, [title])
@@ -30,9 +27,9 @@ export const TopBar = React.memo(({ title, text, button }: TopBarProps) => {
     >
       <Pressable
         hitSlop={{ left: 5, top: 5, right: 5, bottom: 5 }}
-        onPress={button.onPress}
+        onPress={onPress}
       >
-        {button.jsx}
+        <MaterialIcons name="arrow-back-ios" size={24} color="#007AFF" />
       </Pressable>
 
       <View padding={9}>
