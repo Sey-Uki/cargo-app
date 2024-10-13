@@ -159,6 +159,8 @@ export default function Card() {
         text={`от ${localizeDate(new Date(order.createdate))}`}
       />
 
+      <Divider style={{ backgroundColor: "#E6E6E6", height: 1 }} />
+
       <View
         flex={1}
         backgroundColor="#F2F2F7"
