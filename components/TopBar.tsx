@@ -1,8 +1,7 @@
 import React from "react";
 import { Pressable } from "react-native";
 
-import { Text } from "@gluestack-ui/themed";
-import { Heading, View } from "@gluestack-ui/themed";
+import { Heading, View, Text } from "@gluestack-ui/themed";
 
 type TopBarProps = {
   button: {
@@ -36,7 +35,7 @@ export const TopBar = React.memo(({ title, text, button }: TopBarProps) => {
 
         {text && <Text color="#605E5E" textAlign="center">{text}</Text>}
       </View>
-      
+
       <View />
     </View>
   );

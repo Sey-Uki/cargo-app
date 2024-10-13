@@ -2,10 +2,10 @@ import {
   AccordionContent,
   AccordionIcon,
   ChevronUpIcon,
-} from "@gluestack-ui/themed";
-import { ChevronDownIcon } from "@gluestack-ui/themed";
-import { AccordionTitleText } from "@gluestack-ui/themed";
-import {
+  ChevronDownIcon,
+
+  AccordionTitleText,
+
   Accordion as AccordionComponent,
   AccordionHeader,
   AccordionItem,

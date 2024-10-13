@@ -1,5 +1,4 @@
-import { Text } from "@gluestack-ui/themed";
-import { View } from "@gluestack-ui/themed";
+import { Text, View } from "@gluestack-ui/themed";
 
 type Props = {
   label: string;
