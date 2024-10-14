@@ -9,15 +9,18 @@ export type TrackingType = "toMoscow" | "inMoscow" | "toRecipient";
 
 export type OrderStatusType = "active" | "finished";
 
+export type TrackingItem = {
+  status: TrackingType;
+  date: string;
+}
+
 export type OrderItem = {
+  id: string;
   userId: string;
   code: string;
   createdate: string;
   paymentDate: Date | null;
-  tracking: {
-    status: TrackingType;
-    date: string;
-  }[];
+  tracking: TrackingItem[];
   orderStatus: OrderStatusType;
   invoice: {
     title: string;

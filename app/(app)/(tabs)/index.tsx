@@ -1,9 +1,8 @@
 import { Card, Heading, Spinner, Text, View } from "@gluestack-ui/themed";
-import { TopBar } from "@/components/TopBar";
 import { useAppSelector } from "@/store";
-import { Pressable, FlatList } from "react-native";
+import { Pressable, FlatList, RefreshControl } from "react-native";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { selectUserData } from "@/store/slices/user";
 import { FILTER_HASH, FILTERS, TRACKING_STATUSES } from "@/app/data/orders";
 import { ImageList } from "@/components/ImageList";
@@ -19,6 +18,18 @@ export default function Index() {
   const [isLoading, setIsLoading] = useState(false);
   const [orders, setOrders] = useState<OrderItem[]>([]);
 
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    if (!user?.userId) return;
+
+    setRefreshing(true);
+
+    getOrdersByUserId(user.userId)
+      .then((data) => setOrders(data))
+      .finally(() => setRefreshing(false));
+  }, [user?.userId]);
+
   useEffect(() => {
     if (!user?.userId) return;
 
@@ -32,7 +43,11 @@ export default function Index() {
   return (
     <View flex={1} backgroundColor="#fff">
       <View style={{ height: 70 }} />
-      <TopBar text="Все заказы" />
+
+      <Heading textAlign="center" paddingBottom={9}>
+        Все заказы
+      </Heading>
+
       {isLoading && (
         <View height="100%" backgroundColor="#F2F2F7">
           <Spinner color="$emerald600" paddingTop={50} size="large" />
@@ -91,6 +106,9 @@ export default function Index() {
             <FlatList
               style={{ height: "100%" }}
               data={orders}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
               renderItem={({ item }) => {
                 if (
                   selectedFilter === item.orderStatus ||
@@ -113,7 +131,7 @@ export default function Index() {
                         onPress={() => {
                           router.navigate({
                             pathname: "/(cards)/[id]",
-                            params: { id: item.code },
+                            params: { id: item.id },
                           });
                         }}
                       >
@@ -140,7 +158,7 @@ export default function Index() {
                               }
                             </Text>
                           </View>
-                          
+
                           <Text
                             size="md"
                             color={item.paymentDate ? "$black" : "#FF3B30"}

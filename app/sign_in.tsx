@@ -9,7 +9,7 @@ import {
   KeyboardAvoidingView,
   ButtonSpinner,
 } from "@gluestack-ui/themed";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import { Image } from "react-native";
 import { router } from "expo-router";
@@ -30,7 +30,7 @@ export default function SignIn() {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const onAuth = async () => {
+  const onAuth = useCallback(async () => {
     setIsLoading(true);
 
     try {
@@ -59,6 +59,8 @@ export default function SignIn() {
       dispatch(
         setUserData({
           email: userData.email,
+          phone: userData.phone,
+          code: userData.code,
           password: userData.password,
           firstName: userData.firstname,
           lastName: userData.lastname,
@@ -76,7 +78,7 @@ export default function SignIn() {
 
       console.error("Ошибка при получении данных из о пользователе: ", error);
     }
-  };
+  }, [code, password])
 
   return (
     <SafeAreaView>
@@ -86,7 +88,12 @@ export default function SignIn() {
             <View>
               <Image
                 source={require("@/assets/images/logo.png")}
-                style={{ marginBottom: 46 }}
+                style={{
+                  marginBottom: 46,
+                  width: 170,
+                  height: 46,
+                  objectFit: 'contain'
+                }}
               />
               <Text fontFamily="SFProText-Medium" fontSize={22} color="$black">
                 Войти в профиль

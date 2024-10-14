@@ -1,10 +1,9 @@
 import { EmailAndPhone } from "@/components/EmailAndPhone";
 import { ProfileField } from "@/components/ProfileField";
-import { TopBar } from "@/components/TopBar";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { logOut } from "@/store/slices/auth";
 import { selectUserData } from "@/store/slices/user";
-import { Button, ButtonText, Text, View } from "@gluestack-ui/themed";
+import { Button, ButtonText, Heading, Text, View } from "@gluestack-ui/themed";
 import { router } from "expo-router";
 
 export default function Profile() {
@@ -19,7 +18,10 @@ export default function Profile() {
   return (
     <View flex={1} backgroundColor="#fff">
       <View style={{ height: 70 }} />
-      <TopBar text="Профиль" />
+
+      <Heading textAlign="center" paddingBottom={9}>
+        Профиль
+      </Heading>
       <View
         justifyContent="space-between"
         backgroundColor="#F2F2F7"
