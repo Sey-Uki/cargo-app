@@ -31,13 +31,14 @@ export const TopBar = React.memo(
         <Pressable
           hitSlop={{ left: 5, top: 5, right: 5, bottom: 5 }}
           onPress={left?.onPress}
+          style={{flexDirection: 'row', alignItems: "center"}}
         >
           <MaterialIcons name="arrow-back-ios" size={24} color="#007AFF" />
-          {left.text && <Text>{left.text}</Text>}
+          {left.text && <Text color="#007AFF">{left.text}</Text>}
         </Pressable>
 
         <View padding={9}>
-          <Heading fontSize="md" textAlign="center" lineHeight={15}>
+          <Heading size="sm" textAlign="center" lineHeight={15}>
             {title}
           </Heading>
 
@@ -53,7 +54,7 @@ export const TopBar = React.memo(
           onPress={right?.onPress}
         >
           {right.icon}
-          {right.text && <Text>{right.text}</Text>}
+          {right.text && <Text color="#007AFF">{right.text}</Text>}
         </TouchableOpacity>
       </View>
     );
