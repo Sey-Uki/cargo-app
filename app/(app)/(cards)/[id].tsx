@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Image } from "react-native";
+import { Image, Alert } from "react-native";
 
 import { router, useLocalSearchParams } from "expo-router";
 
 import * as Clipboard from "expo-clipboard";
+import * as FileSystem from "expo-file-system";
+import * as MediaLibrary from "expo-media-library";
 
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -115,6 +117,46 @@ export default function Card() {
   const onCopy = useCallback(async () => {
     await Clipboard.setStringAsync(`#${order?.code}`);
   }, [order?.code]);
+
+  const getPermission = useCallback(async () => {
+    const { status } = await MediaLibrary.requestPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Ошибка", "Необходимо разрешение на доступ к медиафайлам");
+
+      return false;
+    }
+
+    return true;
+  }, []);
+
+  const onDowload = useCallback(async () => {
+    if (!order?.magicTransImage) return;
+
+    const permission = await getPermission();
+
+    if (!permission) return;
+
+    try {
+      const { uri: localUri } = await FileSystem.downloadAsync(
+        order.magicTransImage.src,
+        FileSystem.documentDirectory + order.magicTransImage.title
+      );
+
+      const asset = await MediaLibrary.createAssetAsync(localUri);
+      const album = await MediaLibrary.getAlbumAsync("Eleven Cargo");
+
+      if (album === null) {
+        await MediaLibrary.createAlbumAsync("Eleven Cargo", asset, false);
+      } else {
+        await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
+      }
+
+      Alert.alert("Сохранено");
+    } catch (error) {
+      Alert.alert("Ошибка", "Необходимо разрешение на доступ к медиафайлам");
+      console.error(error);
+    }
+  }, [order?.magicTransImage]);
 
   if (isLoading) {
     return (
@@ -256,7 +298,7 @@ export default function Card() {
           >
             <TopBar
               left={{ text: "Назад", onPress: onHideInvoice }}
-              right={{ text: "Скачать" }}
+              right={{ text: "Скачать", onPress: onDowload }}
               title="Накладная"
               text="от Magic Trans"
             />
