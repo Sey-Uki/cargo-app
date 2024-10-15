@@ -10,21 +10,18 @@ import { MaterialIcons } from "@expo/vector-icons";
 import {
   Button,
   ButtonText,
-  CloseIcon,
   Heading,
   Icon,
   Modal,
-  ModalBackdrop,
   ModalContent,
   Pressable,
   Text,
-  ModalCloseButton,
   View,
   Spinner,
   ArrowRightIcon,
   InfoIcon,
   ScrollView,
-  Divider
+  Divider,
 } from "@gluestack-ui/themed";
 
 import { getOrderById } from "@/app/api/orders";
@@ -152,16 +149,16 @@ export default function Card() {
     <ScrollView
       flex={1}
       contentContainerStyle={{
-        paddingVertical: 50
+        paddingVertical: 50,
       }}
       showsVerticalScrollIndicator={false}
       backgroundColor="white"
     >
       <TopBar
-        left={{onPress: router.back}}
+        left={{ onPress: router.back }}
         right={{
           icon: <MaterialIcons name="file-copy" size={22} color="#007AFF" />,
-          onPress: onCopy
+          onPress: onCopy,
         }}
         title={`#${order.code}`}
         text={`от ${localizeDate(new Date(order.createdate))}`}
@@ -169,11 +166,7 @@ export default function Card() {
 
       <Divider style={{ backgroundColor: "#E6E6E6", height: 1 }} />
 
-      <View
-        flex={1}
-        backgroundColor="#F2F2F7"
-        gap={8}
-      >
+      <View flex={1} backgroundColor="#F2F2F7" gap={8}>
         <View
           borderBottomRightRadius={8}
           borderBottomLeftRadius={8}
@@ -257,15 +250,19 @@ export default function Card() {
           </View>
         )}
 
-        <Modal isOpen={showInvoice} onClose={onHideInvoice} finalFocusRef={ref}>
-          <ModalBackdrop />
-          <ModalContent style={{ flex: 0.5 }}>
-            <ModalCloseButton alignSelf="flex-end">
-              <Icon as={CloseIcon} width={30} height={30} />
-            </ModalCloseButton>
+        <Modal isOpen={showInvoice}>
+          <ModalContent
+            style={{ height: "100%", paddingVertical: 60, width: "100%" }}
+          >
+            <TopBar
+              left={{ text: "Назад", onPress: onHideInvoice }}
+              right={{ text: "Скачать" }}
+              title="Накладная"
+              text="от Magic Trans"
+            />
             <Image
               source={{ uri: order.magicTransImage?.src }}
-              style={{ width: "100%", objectFit: "cover", flex: 1 }}
+              style={{ objectFit: "contain", flex: 1 }}
               alt={order.magicTransImage?.title}
             />
           </ModalContent>
