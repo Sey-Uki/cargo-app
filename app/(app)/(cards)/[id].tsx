@@ -1,7 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Image } from "react-native";
 
 import { router, useLocalSearchParams } from "expo-router";
+
+import * as Clipboard from "expo-clipboard";
+
+import { MaterialIcons } from "@expo/vector-icons";
 
 import {
   Button,
@@ -111,6 +115,10 @@ export default function Card() {
     );
   }, [order?.invoice]);
 
+  const onCopy = useCallback(async () => {
+    await Clipboard.setStringAsync(`#${order?.code}`);
+  }, [order?.code]);
+
   if (isLoading) {
     return (
       <>
@@ -150,7 +158,11 @@ export default function Card() {
       backgroundColor="white"
     >
       <TopBar
-        onPress={router.back}
+        left={{onPress: router.back}}
+        right={{
+          icon: <MaterialIcons name="file-copy" size={22} color="#007AFF" />,
+          onPress: onCopy
+        }}
         title={`#${order.code}`}
         text={`от ${localizeDate(new Date(order.createdate))}`}
       />
