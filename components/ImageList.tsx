@@ -1,12 +1,14 @@
 import { ImageItem } from "@/app/types/orders";
 import { Image } from "@gluestack-ui/themed";
-import { FlatList } from "react-native";
+import { FlatList, Pressable } from "react-native";
 
 type Props = {
   images: ImageItem[];
+  setShowImgInfo?: any;
+  showModal?: any;
 };
 
-export const ImageList = ({ images }: Props) => {
+export const ImageList = ({ images, setShowImgInfo, showModal }: Props) => {
   return (
     <FlatList
       data={images}
@@ -17,15 +19,22 @@ export const ImageList = ({ images }: Props) => {
       keyExtractor={(item) => item.title}
       renderItem={({ item }) => {
         return (
-          <Image
-            size="md"
-            key={item.title}
-            source={{
-              uri: item.src,
+          <Pressable
+            onPress={() => {
+              setShowImgInfo({ uri: item.src, alt: item.title });
+              showModal(true);
             }}
-            alt={item.title}
-            borderRadius={8}
-          />
+          >
+            <Image
+              size="md"
+              key={item.title}
+              source={{
+                uri: item.src,
+              }}
+              alt={item.title}
+              borderRadius={8}
+            />
+          </Pressable>
         );
       }}
     />

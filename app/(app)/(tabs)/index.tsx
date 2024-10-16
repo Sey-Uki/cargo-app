@@ -50,7 +50,7 @@ export default function Index() {
 
       {isLoading && (
         <View height="100%" backgroundColor="#F2F2F7">
-          <Spinner color="$emerald600" paddingTop={50} size="large" />
+          <Spinner color="#1A64CB" paddingTop={50} size="large" />
         </View>
       )}
       <View height="100%" backgroundColor="#F2F2F7">

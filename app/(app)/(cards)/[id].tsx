@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Image, Alert } from "react-native";
+import { Image } from "react-native";
 
 import { router, useLocalSearchParams } from "expo-router";
 
 import * as Clipboard from "expo-clipboard";
-import * as FileSystem from "expo-file-system";
-import * as MediaLibrary from "expo-media-library";
 
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -38,6 +36,8 @@ import { Tracking } from "@/components/Tracking";
 import { Accordion } from "@/components/Accordion";
 import { OrderPayment } from "@/components/OrderPayment";
 import { TopBar } from "@/components/TopBar";
+import { ImageModal } from "@/components/ImageModal";
+import { RefreshControl } from "react-native";
 
 export default function Card() {
   const { id } = useLocalSearchParams();
@@ -46,6 +46,21 @@ export default function Card() {
   const [order, setOrder] = useState<OrderItem | undefined>();
 
   const [showInvoice, setShowInvoice] = useState(false);
+
+  const [showImg, setShowImg] = useState(false);
+  const [imgUri, setImgUri] = useState({ uri: "", alt: "" });
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    if (!id) return;
+
+    setRefreshing(true);
+
+    getOrderById(id as string)
+      .then((data) => setOrder(data as OrderItem))
+      .finally(() => setRefreshing(false));
+  }, [id]);
 
   const ref = useRef(null);
 
@@ -118,52 +133,12 @@ export default function Card() {
     await Clipboard.setStringAsync(`#${order?.code}`);
   }, [order?.code]);
 
-  const getPermission = useCallback(async () => {
-    const { status } = await MediaLibrary.requestPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert("Ошибка", "Необходимо разрешение на доступ к медиафайлам");
-
-      return false;
-    }
-
-    return true;
-  }, []);
-
-  const onDowload = useCallback(async () => {
-    if (!order?.magicTransImage) return;
-
-    const permission = await getPermission();
-
-    if (!permission) return;
-
-    try {
-      const { uri: localUri } = await FileSystem.downloadAsync(
-        order.magicTransImage.src,
-        FileSystem.documentDirectory + order.magicTransImage.title
-      );
-
-      const asset = await MediaLibrary.createAssetAsync(localUri);
-      const album = await MediaLibrary.getAlbumAsync("Eleven Cargo");
-
-      if (album === null) {
-        await MediaLibrary.createAlbumAsync("Eleven Cargo", asset, false);
-      } else {
-        await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
-      }
-
-      Alert.alert("Сохранено");
-    } catch (error) {
-      Alert.alert("Ошибка", "Необходимо разрешение на доступ к медиафайлам");
-      console.error(error);
-    }
-  }, [order?.magicTransImage]);
-
   if (isLoading) {
     return (
       <>
         <View style={{ height: 70 }} />
         <View height="100%" backgroundColor="#F2F2F7">
-          <Spinner color="$emerald600" paddingTop={50} size="large" />
+          <Spinner color="#1A64CB" paddingTop={50} size="large" />
         </View>
       </>
     );
@@ -195,6 +170,9 @@ export default function Card() {
       }}
       showsVerticalScrollIndicator={false}
       backgroundColor="white"
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
     >
       <TopBar
         left={{ onPress: router.back }}
@@ -205,7 +183,6 @@ export default function Card() {
         title={`#${order.code}`}
         text={`от ${localizeDate(new Date(order.createdate))}`}
       />
-
       <Divider style={{ backgroundColor: "#E6E6E6", height: 1 }} />
 
       <View flex={1} backgroundColor="#F2F2F7" gap={8}>
@@ -288,27 +265,31 @@ export default function Card() {
             <Text color="black" fontWeight={500} size="lg">
               Товары
             </Text>
-            <ImageList images={order.images} />
+            <ImageList
+              images={order.images}
+              setShowImgInfo={setImgUri}
+              showModal={setShowImg}
+            />
           </View>
         )}
 
-        <Modal isOpen={showInvoice}>
-          <ModalContent
-            style={{ height: "100%", paddingVertical: 60, width: "100%" }}
-          >
-            <TopBar
-              left={{ text: "Назад", onPress: onHideInvoice }}
-              right={{ text: "Скачать", onPress: onDowload }}
-              title="Накладная"
-              text="от Magic Trans"
-            />
-            <Image
-              source={{ uri: order.magicTransImage?.src }}
-              style={{ objectFit: "contain", flex: 1 }}
-              alt={order.magicTransImage?.title}
-            />
-          </ModalContent>
-        </Modal>
+        <ImageModal
+          title="Накладная"
+          text="от Magic Trans"
+          showModal={showInvoice}
+          onHideModal={onHideInvoice}
+          img={{
+            uri: order.magicTransImage?.src,
+            alt: order.magicTransImage?.title,
+          }}
+        />
+
+        <ImageModal
+          title="Товары"
+          showModal={showImg}
+          onHideModal={() => setShowImg(false)}
+          img={imgUri}
+        />
       </View>
     </ScrollView>
   );

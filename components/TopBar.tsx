@@ -16,7 +16,7 @@ type TopBarProps = {
     onPress?: () => void;
   };
   title: string;
-  text: string;
+  text?: string;
 };
 
 export const TopBar = React.memo(
@@ -31,7 +31,7 @@ export const TopBar = React.memo(
         <Pressable
           hitSlop={{ left: 5, top: 5, right: 5, bottom: 5 }}
           onPress={left?.onPress}
-          style={{flexDirection: 'row', alignItems: "center"}}
+          style={{ flexDirection: "row", alignItems: "center" }}
         >
           <MaterialIcons name="arrow-back-ios" size={24} color="#007AFF" />
           {left.text && <Text color="#007AFF">{left.text}</Text>}
