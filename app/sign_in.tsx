@@ -16,7 +16,6 @@ import { router } from "expo-router";
 import { useAppDispatch } from "@/store";
 import { logIn } from "@/store/slices/auth";
 import { setUserData } from "@/store/slices/user";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 import { db } from "@/firebase-config";
 import { collection, getDocs } from "firebase/firestore";
@@ -81,96 +80,106 @@ export default function SignIn() {
   }, [code, password])
 
   return (
-    <SafeAreaView>
-      <KeyboardAvoidingView behavior="padding">
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <View paddingHorizontal={20} gap={20} marginTop={20} height="100%">
-            <View>
-              <Image
-                source={require("@/assets/images/logo.png")}
-                style={{
-                  marginBottom: 46,
-                  width: 170,
-                  height: 46,
-                  objectFit: 'contain'
-                }}
-              />
-              <Text fontFamily="SFProText-Medium" fontSize={22} color="$black">
-                Войти в профиль
-              </Text>
-            </View>
-
-            <View gap={12}>
-              <FormControl gap={8}>
-                <Text
-                  fontFamily="SFProText-Regular"
-                  fontSize="$md"
-                  color="$black"
-                >
-                  Код пользователя
-                </Text>
-                <Input borderRadius="$lg">
-                  <InputField
-                    fontSize="$sm"
-                    placeholder="code"
-                    value={code}
-                    onChangeText={setCode}
-                  />
-                </Input>
-              </FormControl>
-
-              <FormControl gap={8}>
-                <Text
-                  fontFamily="SFProText-Regular"
-                  fontSize="$md"
-                  color="$black"
-                >
-                  Пароль
-                </Text>
-                <Input borderRadius="$lg">
-                  <InputField
-                    fontSize="$sm"
-                    placeholder="******"
-                    type="password"
-                    value={password}
-                    onChangeText={setPassword}
-                  />
-                </Input>
-              </FormControl>
-
-              <FormControl>
-                {isLoading && (
-                  <Button isDisabled bg="#1A64CB" borderRadius={12} height={44}>
-                    <ButtonSpinner mr="$1" />
-                    <ButtonText fontWeight="$medium" fontSize={16}>
-                      Загрузка...
-                    </ButtonText>
-                  </Button>
-                )}
-
-                {!isLoading && (
-                  <Button
-                    bg="#1A64CB"
-                    borderRadius={12}
-                    height={44}
-                    onPress={() => {
-                      onAuth();
-                    }}
-                  >
-                    <ButtonText
-                      fontFamily="SFProText-Medium"
-                      fontWeight="$medium"
-                      fontSize={16}
-                    >
-                      Войти
-                    </ButtonText>
-                  </Button>
-                )}
-              </FormControl>
-            </View>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior="padding"
+    >
+      <TouchableWithoutFeedback
+        onPress={Keyboard.dismiss}
+        accessible={false}
+      >
+        <View
+          paddingHorizontal={20}
+          gap={20}
+          paddingTop={20}
+          backgroundColor="white"
+          flex={1}
+        >
+          <View>
+            <Image
+              source={require("@/assets/images/logo.png")}
+              style={{
+                marginBottom: 46,
+                width: 170,
+                height: 46,
+                objectFit: 'contain'
+              }}
+            />
+            <Text fontFamily="SFProText-Medium" fontSize={22} color="$black">
+              Войти в профиль
+            </Text>
           </View>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+
+          <View gap={12}>
+            <FormControl gap={8}>
+              <Text
+                fontFamily="SFProText-Regular"
+                fontSize="$md"
+                color="$black"
+              >
+                Код пользователя
+              </Text>
+              <Input borderRadius="$lg">
+                <InputField
+                  fontSize="$sm"
+                  placeholder="code"
+                  value={code}
+                  onChangeText={setCode}
+                />
+              </Input>
+            </FormControl>
+
+            <FormControl gap={8}>
+              <Text
+                fontFamily="SFProText-Regular"
+                fontSize="$md"
+                color="$black"
+              >
+                Пароль
+              </Text>
+              <Input borderRadius="$lg">
+                <InputField
+                  fontSize="$sm"
+                  placeholder="******"
+                  type="password"
+                  value={password}
+                  onChangeText={setPassword}
+                />
+              </Input>
+            </FormControl>
+
+            <FormControl>
+              {isLoading && (
+                <Button isDisabled bg="#1A64CB" borderRadius={12} height={44}>
+                  <ButtonSpinner mr="$1" />
+                  <ButtonText fontWeight="$medium" fontSize={16}>
+                    Загрузка...
+                  </ButtonText>
+                </Button>
+              )}
+
+              {!isLoading && (
+                <Button
+                  bg="#1A64CB"
+                  borderRadius={12}
+                  height={44}
+                  onPress={() => {
+                    onAuth();
+                  }}
+                >
+                  <ButtonText
+                    fontFamily="SFProText-Medium"
+                    fontWeight="$medium"
+                    fontSize={16}
+                  >
+                    Войти
+                  </ButtonText>
+                </Button>
+              )}
+            </FormControl>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }

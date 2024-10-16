@@ -42,8 +42,6 @@ export default function Index() {
 
   return (
     <View flex={1} backgroundColor="#fff">
-      <View style={{ height: 70 }} />
-
       <Heading textAlign="center" paddingBottom={9}>
         Все заказы
       </Heading>

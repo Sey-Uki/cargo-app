@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Image } from "react-native";
 
 import { router, useLocalSearchParams } from "expo-router";
 
@@ -12,8 +11,6 @@ import {
   ButtonText,
   Heading,
   Icon,
-  Modal,
-  ModalContent,
   Pressable,
   Text,
   View,
@@ -164,10 +161,6 @@ export default function Card() {
 
   return (
     <ScrollView
-      flex={1}
-      contentContainerStyle={{
-        paddingVertical: 50,
-      }}
       showsVerticalScrollIndicator={false}
       backgroundColor="white"
       refreshControl={

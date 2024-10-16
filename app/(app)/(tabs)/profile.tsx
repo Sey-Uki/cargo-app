@@ -17,8 +17,6 @@ export default function Profile() {
 
   return (
     <View flex={1} backgroundColor="#fff">
-      <View style={{ height: 70 }} />
-
       <Heading textAlign="center" paddingBottom={9}>
         Профиль
       </Heading>
