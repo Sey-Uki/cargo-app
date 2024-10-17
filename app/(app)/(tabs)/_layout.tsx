@@ -9,7 +9,11 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#000000'
+        tabBarActiveTintColor: '#007AFF',
+        tabBarStyle: {
+          paddingBottom: 0,
+          height: 60
+        }
       }}
     >
       <Tabs.Screen
@@ -20,8 +24,8 @@ export default function TabLayout() {
             <MaterialCommunityIcons
               name={focused ? "truck-delivery" : "truck-delivery-outline"}
               size={24}
-              color={focused ? "#000000" : "#828282"}
-              style={{ marginBottom: -3 }}
+              color={focused ? "#007AFF" : "#828282"}
+              style={{ marginTop: 12 }}
             />
           ),
         }}
@@ -35,8 +39,8 @@ export default function TabLayout() {
             <Ionicons
               name={focused ? "person-circle" : "person-circle-outline"}
               size={24}
-              color={focused ? "#000000" : "#828282"}
-              style={{ marginBottom: -3 }}
+              color={focused ? "#007AFF" : "#828282"}
+              style={{ marginTop: 12 }}
             />
           ),
         }}

@@ -36,7 +36,7 @@ export default function Root() {
           <SafeAreaView
             style={{
               flex: 1,
-              backgroundColor: "white"
+              backgroundColor: "white",
             }}
           >
             <Stack screenOptions={{ headerShown: false }}>
